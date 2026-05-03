@@ -4,400 +4,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Press Start - Escola Ideal com Borda de Árvore</title>
+    <title>Press Start - Escola Ideal</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-    <style>
-        /* =========================================
-           VARIÁVEIS DE TEMA E DA BORDA
-           ========================================= */
-        :root {
-            /* Tema original */
-            --bg-sky: #d4f6ff;
-            --brightness-assets: 1;
-            --sun-opacity: 1;
-            --moon-opacity: 0;
-            
-            /* Borda da Árvore */
-            --sprite-full: url('./src/img/border/TreeSpriteSheet.png');
-        }
-
-        body.dark-mode {
-            --bg-sky: #1a233a;
-            --brightness-assets: 0.6;
-            --sun-opacity: 0;
-            --moon-opacity: 1;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Baloo 2', cursive;
-        }
-
-        body {
-            /* Ajustado para compensar a borda da árvore */
-            background-color: var(--bg-sky);
-            transition: background-color 0.8s ease;
-            min-height: 150vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* =========================================
-           BORDA DE ÁRVORE (Overlay)
-           ========================================= */
-        .container-arvore {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            pointer-events: none; /* CRUCIAL: Permite clicar através da borda */
-            z-index: 9999; /* Fica na frente de todo o site */
-        }
-
-        .peca-arvore {
-            position: absolute;
-            pointer-events: none;
-            image-rendering: pixelated;
-        }
-
-        /* Camada dos Preenchimentos */
-        .preenchimento { z-index: 5; }
-
-        .preenchimento-topo {
-            top: 0; left: 0; right: 0; height: 120px;
-            background-image: var(--sprite-full); background-position: 0px 0px; background-repeat: repeat-x;
-        }
-
-        .preenchimento-base {
-            bottom: 0; left: 0; right: 0; height: 56px;
-            display: flex; overflow: hidden;
-        }
-
-        .pedaco-base {
-            flex-shrink: 0; width: 483px; height: 100%;
-            background-image: var(--sprite-full); background-position: 0px -335px; background-repeat: no-repeat;
-            image-rendering: pixelated;
-        }
-
-        .preenchimento-lado-esquerdo {
-            top: 0; bottom: 0; left: 0; width: 65px;
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        .preenchimento-lado-direito {
-            top: 0; bottom: 0; right: 0; width: 65px;
-            display: flex; flex-direction: column; overflow: hidden;
-            transform: scaleX(-1);
-        }
-
-        .pedaco-lado {
-            flex-shrink: 0; height: 43px;
-            background-image: var(--sprite-full); background-position: -371px -165px; background-repeat: no-repeat;
-        }
-
-        /* Camada dos Cantos */
-        .canto { z-index: 10; }
-
-        .angulo-esquerdo-topo {
-            top: 0; left: 0; width: 365px; height: 212px;
-            background-image: var(--sprite-full); background-position: 0px -121px; background-repeat: no-repeat;
-        }
-
-        .angulo-direito-topo {
-            top: 0; right: 0; width: 365px; height: 212px;
-            background-image: var(--sprite-full); background-position: 0px -121px; background-repeat: no-repeat;
-            transform: scaleX(-1);
-        }
-
-        .angulo-esquerdo-base {
-            bottom: 0; left: 0; width: 365px; height: 212px;
-            background-image: var(--sprite-full); background-position: -371px -121px; background-repeat: no-repeat;
-        }
-
-        .angulo-direito-base {
-            bottom: 0; right: 0; width: 365px; height: 212px;
-            background-image: var(--sprite-full); background-position: -371px -121px; background-repeat: no-repeat;
-            transform: scaleX(-1);
-        }
-
-        /* =========================================
-           BACKGROUND PARALLAX
-           ========================================= */
-        .parallax-container {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0; pointer-events: none; overflow: hidden;
-        }
-
-        .sun, .moon {
-            position: absolute; top: 25%; left: 8%; width: 80px; height: 80px;
-            border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
-            pointer-events: auto; z-index: 25;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            animation: float 6s ease-in-out infinite;
-        }
-        .sun { background: radial-gradient(circle at 30% 30%, #ffeb3b, #ff9800); opacity: var(--sun-opacity); }
-        .moon { background: radial-gradient(circle at 30% 30%, #e0e0e0, #9e9e9e); opacity: var(--moon-opacity); }
-        .moon::before, .moon::after { content: ''; position: absolute; background: rgba(160, 160, 160, 0.5); border-radius: 50%; }
-        .moon::before { width: 15px; height: 15px; top: 20px; left: 15px; }
-        .moon::after { width: 10px; height: 10px; top: 45px; left: 50px; }
-        .sun::before, .sun::after { content: ''; position: absolute; background: radial-gradient(circle, #ffeb3b, transparent); border-radius: 50%; pointer-events: none; }
-        .sun::before { width: 120px; height: 120px; top: -20px; left: -20px; opacity: 0.3; animation: pulse 2s ease-in-out infinite; }
-        .sun::after { width: 160px; height: 160px; top: -40px; left: -40px; opacity: 0.15; animation: pulse 3s ease-in-out infinite reverse; }
-
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.2); opacity: 0.5; } }
-
-        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
-        body.dark-mode .star { opacity: var(--star-opacity, 0.8); animation: twinkle 2s ease-in-out infinite; }
-        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
-
-        .cloud { position: absolute; background-image: url('src/img/background/cloud.png'); background-size: contain; background-repeat: no-repeat; opacity: 0.7; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; animation: floatCloud linear infinite; }
-        @keyframes floatCloud { 0% { transform: translateX(-100px); } 100% { transform: translateX(calc(100vw + 100px)); } }
-        .cloud-1 { top: 5%; left: -150px; width: 180px; height: 100px; animation-duration: 35s; animation-delay: 0s; }
-        .cloud-2 { top: 15%; left: -200px; width: 250px; height: 140px; animation-duration: 45s; animation-delay: -10s; }
-        .cloud-3 { top: 25%; left: -120px; width: 160px; height: 90px; animation-duration: 30s; animation-delay: -20s; }
-        .cloud-4 { top: 8%; left: -300px; width: 220px; height: 120px; animation-duration: 50s; animation-delay: -5s; }
-        .cloud-5 { top: 20%; left: -180px; width: 140px; height: 80px; animation-duration: 38s; animation-delay: -15s; }
-
-        .layer-school { position: absolute; bottom: 30%; left: 2%; width: 350px; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; z-index: 1; }
-        .layer-tree-1 { position: absolute; bottom: 30%; right: 15%; width: 100px; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; z-index: 1; }
-        .layer-tree-2 { position: absolute; bottom: 33%; right: 8%; width: 80px; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; z-index: 1; }
-
-        .layer-ground-back { position: absolute; bottom: 35%; left: 0; width: 100%; height: 35vh; background-image: url('src/img/background/ground02.png'); background-size: cover; background-position: top center; background-repeat: repeat-x; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; z-index: 0; }
-        .layer-ground-mid { position: absolute; bottom: 15%; left: 0; width: 100%; height: 30vh; background-image: url('src/img/background/ground02.png'); background-size: cover; background-position: top center; background-repeat: repeat-x; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; z-index: 2; opacity: 0.9; }
-        .layer-ground-front { position: absolute; bottom: -10%; left: 0; width: 100%; height: 50vh; background-image: url('src/img/background/ground.png'); background-size: cover; background-position: top center; background-repeat: repeat-x; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; z-index: 3; }
-
-        .leaf { position: absolute; background-image: url('src/img/background/leave.png'); background-size: contain; background-repeat: no-repeat; opacity: 0.6; filter: brightness(var(--brightness-assets)); transition: filter 0.8s ease; pointer-events: none; width: 25px; height: 25px; }
-
-        /* =========================================
-           INTERFACE PRINCIPAL
-           ========================================= */
-        header {
-            background-color: rgba(255, 255, 255, 0.6);
-            padding: 10px 30px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            
-            /* AJUSTES PARA NÃO FICAR ATRÁS DA BORDA DA ÁRVORE */
-            top: 130px; /* Desce o header para baixo da borda topo */
-            left: 100px; /* Afasta da borda esquerda */
-            right: 100px; /* Afasta da borda direita */
-            border-radius: 20px; /* Bordas arredondadas porque agora ele flutua no meio */
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .logo img { height: 67.5px; width: auto; object-fit: contain; transition: height 0.3s ease; display: block; }
-
-        nav { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-        .nav-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 25px; color: white; text-decoration: none; font-weight: 700; font-size: 16px; text-transform: uppercase; }
-        .bg-blue { background-color: #4f91e8; }
-        .bg-orange { background-color: #ffa45b; }
-        .bg-yellow { background-color: #ffcc14; }
-        .bg-red { background-color: #ff6b6b; }
-        .bg-green { background-color: #92b165; }
-
-        .user-area { margin-left: 10px; }
-        .user-badge { background-color: #92b165; padding: 5px 8px 5px 15px; border-radius: 30px; display: flex; align-items: center; gap: 12px; color: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
-        .user-badge i { cursor: pointer; transition: transform 0.2s; }
-        .user-badge i:hover { transform: scale(1.2); }
-        .user-name { font-weight: 700; font-size: 16px; }
-        .user-avatar { width: 38px; height: 38px; background-color: rgba(255, 255, 255, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-
-        main {
-            flex: 1; display: flex; flex-direction: column; align-items: center;
-            /* AJUSTE PARA O CONTEÚDO NÃO FICAR ATRÁS DA BORDA */
-            padding-top: 250px; /* Empurra o conteúdo pra baixo (abaixo do header) */
-            padding-bottom: 100px;
-            margin-left: 100px; margin-right: 100px;
-            position: relative; z-index: 1;
-        }
-
-        .main-title { color: #4f91e8; font-size: 32px; font-weight: 800; text-transform: uppercase; margin-bottom: 50px; text-shadow: 2px 2px 0px white, -2px -2px 0px white, 2px -2px 0px white, -2px 2px 0px white; text-align: center; padding: 0 20px; }
-
-        .cards-container { display: flex; gap: 30px; justify-content: center; align-items: center; width: 100%; flex-wrap: wrap; padding: 0 20px; }
-
-        .card { width: 240px; height: 240px; border-radius: 25px; border: 4px solid white; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-decoration: none; box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), inset 0 -5px 0 rgba(0, 0, 0, 0.1); transition: transform 0.2s ease, filter 0.2s ease; }
-        .card:hover { transform: scale(1.05); filter: brightness(1.1); }
-        .card i { font-size: 70px; margin-bottom: 20px; }
-        .card-title { font-size: 24px; font-weight: 700; text-transform: uppercase; }
-        .card-subtitle { font-size: 12px; font-weight: 600; text-transform: uppercase; margin-top: 5px; opacity: 0.9; }
-        .card-orange { background-color: #ffa45b; }
-        .card-yellow { background-color: #ffcc14; }
-        .card-blue { background-color: #4f91e8; }
-
-        /* =========================================
-           ASSISTENTE E UI FLUTUANTE
-           ========================================= */
-        .assistant-wrapper {
-            position: fixed;
-            /* AJUSTE PARA NÃO ESCONDER ATRÁS DA RAIZ DA ÁRVORE */
-            bottom: clamp(70px, 8vw, 100px); 
-            right: clamp(80px, 5vw, 100px);
-            display: flex; flex-direction: column; align-items: flex-end;
-            z-index: 998; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; max-width: min(90vw, 500px);
-        }
-        .assistant-wrapper.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
-        .speech-bubble { position: relative; background: white; border: 3px solid #FF69B4; border-radius: 20px 20px 20px 5px; padding: clamp(12px, 4vw, 20px) clamp(15px, 5vw, 25px); margin-bottom: 10px; width: 100%; color: #5E3A5E; font-weight: 600; font-size: clamp(0.8rem, 3.5vw, 1.1rem); box-shadow: 0 5px 0 #FFB6C1, 0 8px 15px rgba(0, 0, 0, 0.1); word-break: break-word; }
-        .speech-bubble::after { content: ''; position: absolute; bottom: -15px; right: clamp(30px, 10vw, 60px); border-width: 15px 15px 0; border-style: solid; border-color: #FF69B4 transparent; }
-        .assistant-char-img { width: clamp(120px, 25vw, 200px); height: auto; transition: transform 0.3s ease; cursor: pointer; margin-right: 10px; }
-        .assistant-char-img:hover { transform: scale(1.1) rotate(3deg); }
-        .assistant-char-img:active { transform: scale(0.95); }
-
-        .help-emoji {
-            position: fixed;
-            /* AJUSTE PARA NÃO ESCONDER ATRÁS DA RAIZ DA ÁRVORE */
-            bottom: clamp(70px, 8vw, 100px);
-            right: clamp(80px, 5vw, 100px);
-            background: #FF69B4; color: white; width: clamp(50px, 15vw, 70px); height: clamp(50px, 15vw, 70px); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: clamp(1.8rem, 6vw, 2.8rem); cursor: pointer; box-shadow: 0 8px 0 #FFB6C1, 0 10px 20px rgba(255, 105, 180, 0.4); transition: all 0.3s ease; border: 3px solid white; animation: wiggle 2s infinite; z-index: 999; touch-action: manipulation;
-        }
-        @keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } }
-        .help-emoji:hover { transform: scale(1.1); }
-        .help-emoji:active { transform: scale(0.95); box-shadow: 0 4px 0 #FFB6C1, 0 8px 15px rgba(255, 105, 180, 0.4); }
-
-        .magic-toast { position: fixed; bottom: clamp(80px, 8vw, 100px); left: 50%; transform: translateX(-50%) translateY(100px); background: #FFF0F5; color: #5E3A5E; padding: clamp(10px, 3vw, 15px) clamp(15px, 5vw, 30px); border-radius: min(40px, 8vw); font-size: clamp(0.9rem, 4vw, 1.2rem); font-weight: 600; box-shadow: 0 8px 0 #FFB6C1, 0 12px 20px rgba(0, 0, 0, 0.2); border: 3px solid white; z-index: 9999; opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; gap: clamp(8px, 3vw, 15px); max-width: min(90vw, 400px); width: max-content; pointer-events: none; }
-        .magic-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .magic-toast i { font-size: clamp(1.2rem, 5vw, 1.8rem); color: #FF69B4; }
-
-        .confetti { position: absolute; width: clamp(6px, 2vw, 10px); height: clamp(6px, 2vw, 10px); background: var(--brand-coral, #FF6B6B); opacity: 0.7; animation: confettiFall 3s linear infinite; pointer-events: none; border-radius: 50% 50% 0 50%; z-index: 20; }
-        @keyframes confettiFall { from { transform: translateY(-100px) rotate(0deg); opacity: 1; } to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-
-        body.dark-mode .speech-bubble { background: #2E1B4A; color: #FFE6F0; border-color: #B983FF; }
-        body.dark-mode .speech-bubble::after { border-color: #B983FF transparent; }
-        body.dark-mode .magic-toast { background: #2E1B4A; color: #FFE6F0; }
-        body.dark-mode .help-emoji { background: #B983FF; box-shadow: 0 8px 0 #9B6BDF; }
-
-        /* =========================================
-           RESPONSIVIDADE (Mobile/Tablet)
-           ========================================= */
-        @media (max-width: 1024px) {
-            header { top: 120px; left: 60px; right: 60px; padding: 10px 20px; }
-            main { padding-top: 220px; margin-left: 60px; margin-right: 60px; }
-            .help-emoji, .assistant-wrapper { right: 60px; bottom: 70px; }
-            .logo img { height: 55px; }
-            .cards-container { gap: 25px; }
-            .card { width: 220px; height: 220px; }
-        }
-
-        @media (max-width: 768px) {
-            header { top: 110px; left: 45px; right: 45px; flex-direction: column; padding: 15px; }
-            main { padding-top: 280px; margin-left: 30px; margin-right: 30px; }
-            .help-emoji, .assistant-wrapper { right: 50px; bottom: 60px; }
-            .card { width: 260px; height: 260px; }
-            .sun, .moon { width: 50px; height: 50px; top: 15%; right: 15%; left: auto; }
-        }
-        
-    </style>
+    <link rel="stylesheet" href="src/css/index.css">
 </head>
 
 <body>
 
-    <!-- ========================================= -->
-    <!-- MOLDURA DE ÁRVORE (Sempre por cima, Fixed)-->
-    <!-- ========================================= -->
-    <div class="container-arvore">
-        <!-- Preenchimentos (Fundo da borda) -->
-        <div class="peca-arvore preenchimento preenchimento-topo"></div>
-        <div class="peca-arvore preenchimento preenchimento-base">
-            <div class="pedaco-base"></div><div class="pedaco-base"></div><div class="pedaco-base"></div>
-            <div class="pedaco-base"></div><div class="pedaco-base"></div><div class="pedaco-base"></div>
-            <div class="pedaco-base"></div><div class="pedaco-base"></div><div class="pedaco-base"></div>
-        </div>
-        <div class="peca-arvore preenchimento preenchimento-lado-esquerdo">
-            <!-- Pedaços suficientes para cobrir as telas verticais -->
-            <div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div>
-        </div>
-        <div class="peca-arvore preenchimento preenchimento-lado-direito">
-            <div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div><div class="pedaco-lado"></div>
-        </div>
-
-        <!-- Cantos (Frente da borda) -->
-        <div class="peca-arvore canto angulo-esquerdo-topo"></div>
-        <div class="peca-arvore canto angulo-direito-topo"></div>
-        <div class="peca-arvore canto angulo-esquerdo-base"></div>
-        <div class="peca-arvore canto angulo-direito-base"></div>
-    </div>
-
-    <!-- ========================================= -->
-    <!-- CONTEÚDO ORIGINAL DO JOGO                 -->
-    <!-- ========================================= -->
     <div class="parallax-container">
+        <!-- SOL E LUA -->
         <div class="sun" id="sunIcon" title="Clique para alternar para noite 🌙"></div>
         <div class="moon" id="moonIcon" title="Clique para alternar para dia ☀️"></div>
+
+        <!-- Estrelas geradas via JavaScript -->
         <div id="starsContainer"></div>
+
+        <!-- Nuvens em posições diferentes -->
         <div class="cloud cloud-1"></div>
         <div class="cloud cloud-2"></div>
         <div class="cloud cloud-3"></div>
         <div class="cloud cloud-4"></div>
         <div class="cloud cloud-5"></div>
+
+        <!-- Chão de fundo (ground02.png - montanha) -->
         <div class="layer-ground-back" id="parallax-ground-back"></div>
+
         <img src="src/img/background/school.png" class="layer-school" id="parallax-school" alt="Escola">
         <img src="src/img/background/tree.png" class="layer-tree-1" id="parallax-tree1" alt="Árvore 1">
         <img src="src/img/background/tree.png" class="layer-tree-2" id="parallax-tree2" alt="Árvore 2">
+
+        <!-- Camadas do chão -->
         <div class="layer-ground-mid" id="parallax-ground-mid"></div>
         <div class="layer-ground-front" id="parallax-ground-front"></div>
     </div>
 
-    <header>
-        <div class="logo">
-            <img src="src/img/logo.png" alt="PRESS START" id="logo-img">
-        </div>
-        <nav>
-            <a href="mySchool/game.html" class="nav-btn bg-orange"><i class="fa-solid fa-gamepad"></i> Joguinho</a>
-            <a href="#" class="nav-btn bg-yellow"><i class="fa-solid fa-book-open"></i> História</a>
-            <a href="#" class="nav-btn bg-red"><i class="fa-solid fa-gear"></i> Configuração</a>
-            <div class="user-area">
-                <div class="user-badge">
-                    <i class="fas fa-sun" id="themeToggle" title="Trocar Tema"></i>
-                    <i class="fas fa-bell"></i>
-                    <span class="user-name">Amiguinho</span>
-                    <div class="user-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- DIV ONDE A TOPBAR SERÁ CARREGADA -->
+    <div id="topbar-container"></div>
 
     <main>
         <h1 class="main-title">Press Start: Escola Ideal</h1>
+
         <div class="cards-container">
-            <a href="#" class="card card-orange">
+            <a href="mySchool/game.html" class="card card-orange">
                 <i class="fa-solid fa-gamepad"></i>
-                <div class="card-title">Joguinho</div>
-                <div class="card-subtitle">A escola dos sonhos</div>
+                <div class="card-content">
+                    <div class="card-title">Joguinho</div>
+                    <div class="card-subtitle">A escola dos sonhos</div>
+                </div>
             </a>
-            <a href="#" class="card card-yellow">
+
+            <a href="mySchool/history.html" class="card card-yellow">
                 <i class="fa-solid fa-book-open"></i>
-                <div class="card-title">História</div>
-                <div class="card-subtitle">Nossa trajetória</div>
+                <div class="card-content">
+                    <div class="card-title">História</div>
+                    <div class="card-subtitle">Nossa trajetória</div>
+                </div>
             </a>
-            <a href="#" class="card card-blue">
+
+            <a href="mySchool/awards.html" class="card card-blue">
                 <i class="fa-solid fa-trophy"></i>
-                <div class="card-title">Prêmios</div>
-                <div class="card-subtitle">Reconhecimentos</div>
+                <div class="card-content">
+                    <div class="card-title">Prêmios</div>
+                    <div class="card-subtitle">Reconhecimentos</div>
+                </div>
             </a>
         </div>
     </main>
 
-    <!-- Botão de ajuda e Assistente -->
+    <!-- ========================================= -->
+    <!-- ASSISTENTE (adicionado)                   -->
+    <!-- ========================================= -->
+
+    <!-- Botão de ajuda/assistente -->
     <div class="help-emoji" id="helpEmojiBtn">
         <i class="fas fa-ellipsis-h"></i>
     </div>
+
+    <!-- Toast para mensagens -->
     <div id="magicToast" class="magic-toast">
         <i class="fas fa-magic"></i>
         <span id="toastMessage">✨ Mensagem mágica!</span>
     </div>
+
+    <!-- Container do assistente -->
     <div class="assistant-wrapper" id="assistantContainer">
         <div class="speech-bubble" id="bubbleText">
             Oi! Eu sou sua Prof. Clique em mim para conversarmos! 📖
@@ -406,11 +98,194 @@
             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23FFD700\' /%3E%3Ccircle cx=\'35\' cy=\'40\' r=\'5\' fill=\'black\'/%3E%3Ccircle cx=\'65\' cy=\'40\' r=\'5\' fill=\'black\'/%3E%3Cpath d=\'M30 65 Q50 80,70 65\' stroke=\'black\' stroke-width=\'5\' fill=\'none\' /%3E%3C/svg%3E'">
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts do assistente -->
     <script src="./src/config.js"></script>
     <script src="./src/assistent.js"></script>
+
     <script>
-        // Scripts originais mantidos integralmente
+        // Função para carregar a topbar
+        function loadTopbar() {
+            fetch('topbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('topbar-container').innerHTML = data;
+                    setTimeout(() => {
+                        initTopbarEvents();
+                        initMobileMenu();
+                    }, 100);
+                })
+                .catch(error => console.error('Erro ao carregar a topbar:', error));
+        }
+
+        // Função para mostrar toast
+        function showToastMessage(message) {
+            const toast = document.getElementById('magicToast');
+            const toastMessage = document.getElementById('toastMessage');
+            if (toast && toastMessage) {
+                toastMessage.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Função para alternar tema (GLOBAL)
+        window.toggleTheme = function () {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+
+            if (themeToggle) {
+                themeToggle.classList.remove('fa-sun', 'fa-moon');
+                themeToggle.classList.add(isDark ? 'fa-moon' : 'fa-sun');
+            }
+            if (mobileThemeToggle) {
+                mobileThemeToggle.classList.remove('fa-sun', 'fa-moon');
+                mobileThemeToggle.classList.add(isDark ? 'fa-moon' : 'fa-sun');
+            }
+
+            const message = isDark ? '🌙 Boa noite! A lua está linda hoje! ✨' : '☀️ Bom dia! O sol está radiante! 🌈';
+            showToastMessage(message);
+        };
+
+        // Inicializar eventos da topbar
+        function initTopbarEvents() {
+            const themeToggle = document.getElementById('themeToggle');
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
+            const body = document.body;
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.toggleTheme();
+                });
+            }
+
+            if (sunIcon) {
+                sunIcon.addEventListener('click', () => {
+                    if (body.classList.contains('dark-mode')) {
+                        window.toggleTheme();
+                    } else {
+                        showToastMessage('☀️ Já estamos durante o dia! Clique na lua para virar noite 🌙');
+                    }
+                });
+            }
+
+            if (moonIcon) {
+                moonIcon.addEventListener('click', () => {
+                    if (!body.classList.contains('dark-mode')) {
+                        window.toggleTheme();
+                    } else {
+                        showToastMessage('🌙 Já é noite! Clique no sol para amanhecer ☀️');
+                    }
+                });
+            }
+
+            // Clique no user badge
+            document.querySelectorAll('.user-badge').forEach(badge => {
+                badge.addEventListener('click', function (e) {
+                    if (e.target.closest('#themeToggle') || e.target.closest('#mobileThemeToggle')) {
+                        return;
+                    }
+                    showToastMessage('✨ Olá, amiguinho! ✨');
+                });
+            });
+
+            // Logo responsiva
+            const logoImg = document.getElementById('logo-img');
+            if (logoImg) {
+                function updateLogoResponsive() {
+                    if (window.innerWidth <= 500) {
+                        logoImg.style.height = '80px';
+                        logoImg.src = 'src/img/logo02.png';
+                    } else if (window.innerWidth <= 768) {
+                        logoImg.style.height = '50px';
+                        logoImg.src = 'src/img/logo.png';
+                    } else {
+                        logoImg.style.height = '67.5px';
+                        logoImg.src = 'src/img/logo.png';
+                    }
+                }
+                window.addEventListener('resize', updateLogoResponsive);
+                updateLogoResponsive();
+            }
+        }
+
+        // Inicializar menu mobile (CORRIGIDO)
+        function initMobileMenu() {
+            const menuToggle = document.getElementById('menuToggleBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+
+            console.log('Menu elements:', { menuToggle, mobileMenu, menuOverlay, closeMenuBtn }); // Debug
+
+            function openMenu() {
+                console.log('Opening menu');
+                if (mobileMenu) mobileMenu.classList.add('active');
+                if (menuOverlay) menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                console.log('Closing menu');
+                if (mobileMenu) mobileMenu.classList.remove('active');
+                if (menuOverlay) menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            if (menuToggle) {
+                menuToggle.removeEventListener('click', openMenu);
+                menuToggle.addEventListener('click', openMenu);
+            } else {
+                console.error('menuToggleBtn não encontrado!');
+            }
+
+            if (closeMenuBtn) {
+                closeMenuBtn.removeEventListener('click', closeMenu);
+                closeMenuBtn.addEventListener('click', closeMenu);
+            }
+
+            if (menuOverlay) {
+                menuOverlay.removeEventListener('click', closeMenu);
+                menuOverlay.addEventListener('click', closeMenu);
+            }
+
+            // Links do menu mobile
+            document.querySelectorAll('.mobile-nav .nav-btn').forEach(link => {
+                link.removeEventListener('click', handleMobileLinkClick);
+                link.addEventListener('click', handleMobileLinkClick);
+            });
+
+            function handleMobileLinkClick(e) {
+                const href = link.getAttribute('href');
+                closeMenu();
+                if (href === '#') {
+                    e.preventDefault();
+                    showToastMessage('📖 Em breve mais novidades!');
+                }
+            }
+
+            // Theme toggle mobile
+            const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+            if (mobileThemeToggle) {
+                mobileThemeToggle.removeEventListener('click', handleMobileThemeToggle);
+                mobileThemeToggle.addEventListener('click', handleMobileThemeToggle);
+            }
+
+            function handleMobileThemeToggle(e) {
+                e.stopPropagation();
+                window.toggleTheme();
+                closeMenu();
+            }
+        }
+
+        // Gerar estrelas
         function generateStars() {
             const starsContainer = document.getElementById('starsContainer');
             if (!starsContainer) return;
@@ -429,46 +304,15 @@
                 starsContainer.appendChild(star);
             }
         }
-        
-        function toggleTheme() {
-            body.classList.toggle('dark-mode');
-            if (body.classList.contains('dark-mode')) {
-                themeToggle.classList.remove('fa-sun'); themeToggle.classList.add('fa-moon');
-                showToastMessage('🌙 Boa noite! A lua está linda hoje! ✨');
-            } else {
-                themeToggle.classList.remove('fa-moon'); themeToggle.classList.add('fa-sun');
-                showToastMessage('☀️ Bom dia! O sol está radiante! 🌈');
-            }
-        }
-        
-        function showToastMessage(message) {
-            const toast = document.getElementById('magicToast');
-            const toastMessage = document.getElementById('toastMessage');
-            if (toast && toastMessage) {
-                toastMessage.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 3000);
-            }
-        }
-        
-        const themeToggle = document.getElementById('themeToggle');
-        const sunIcon = document.getElementById('sunIcon');
-        const moonIcon = document.getElementById('moonIcon');
-        const body = document.body;
-        
-        if (sunIcon) { sunIcon.addEventListener('click', () => { if (body.classList.contains('dark-mode')) { toggleTheme(); } else { showToastMessage('☀️ Já estamos durante o dia! Clique na lua para virar noite 🌙'); } }); }
-        if (moonIcon) { moonIcon.addEventListener('click', () => { if (!body.classList.contains('dark-mode')) { toggleTheme(); } else { showToastMessage('🌙 Já é noite! Clique no sol para amanhecer ☀️'); } }); }
-        if (themeToggle) { themeToggle.addEventListener('click', toggleTheme); }
-        
-        generateStars();
-        
+
+        // Parallax
         const school = document.getElementById('parallax-school');
         const tree1 = document.getElementById('parallax-tree1');
         const tree2 = document.getElementById('parallax-tree2');
         const groundBack = document.getElementById('parallax-ground-back');
         const groundMid = document.getElementById('parallax-ground-mid');
         const groundFront = document.getElementById('parallax-ground-front');
-        
+
         if (school && tree1 && tree2 && groundBack && groundMid && groundFront) {
             window.addEventListener('scroll', () => {
                 let scrollY = window.scrollY;
@@ -480,57 +324,72 @@
                 groundFront.style.transform = `translateY(${scrollY * -0.15}px)`;
             });
         }
-        
-        const logoImg = document.getElementById('logo-img');
-        if (logoImg) {
-            function updateLogoResponsive() {
-                if (window.innerWidth <= 500) { logoImg.style.height = '80px'; logoImg.src = 'src/img/logo02.png'; }
-                else if (window.innerWidth <= 768) { logoImg.style.height = '50px'; logoImg.src = 'src/img/logo.png'; }
-                else { logoImg.style.height = '67.5px'; logoImg.src = 'src/img/logo.png'; }
-            }
-            window.addEventListener('resize', updateLogoResponsive);
-            updateLogoResponsive();
-        }
-        
+
+        // Folhas caindo
         function createLeaf() {
-            const leaf = document.createElement('div'); leaf.classList.add('leaf');
-            const size = Math.random() * 20 + 15; leaf.style.width = `${size}px`; leaf.style.height = `${size}px`; leaf.style.left = `${Math.random() * 100}%`;
-            const duration = Math.random() * 12 + 8; const animationType = Math.floor(Math.random() * 3) + 1;
-            let animation = ''; if (animationType === 1) animation = 'fallLeaf1'; else if (animationType === 2) animation = 'fallLeaf2'; else animation = 'fallLeaf3';
-            leaf.style.animation = `${animation} ${duration}s linear infinite`; leaf.style.animationDelay = `${Math.random() * -20}s`; leaf.style.opacity = Math.random() * 0.5 + 0.3;
+            const leaf = document.createElement('div');
+            leaf.classList.add('leaf');
+            const size = Math.random() * 20 + 15;
+            leaf.style.width = `${size}px`;
+            leaf.style.height = `${size}px`;
+            leaf.style.left = `${Math.random() * 100}%`;
+            const duration = Math.random() * 12 + 8;
+            const animationType = Math.floor(Math.random() * 3) + 1;
+            let animation = animationType === 1 ? 'fallLeaf1' : animationType === 2 ? 'fallLeaf2' : 'fallLeaf3';
+            leaf.style.animation = `${animation} ${duration}s linear infinite`;
+            leaf.style.animationDelay = `${Math.random() * -20}s`;
+            leaf.style.opacity = Math.random() * 0.5 + 0.3;
             return leaf;
         }
-        
+
         const parallaxContainer = document.querySelector('.parallax-container');
         if (parallaxContainer) {
-            for (let i = 0; i < 30; i++) { const leaf = createLeaf(); parallaxContainer.appendChild(leaf); }
-            setInterval(() => { const leaves = document.querySelectorAll('.leaf'); if (leaves.length < 25) { const leaf = createLeaf(); parallaxContainer.appendChild(leaf); } }, 5000);
+            for (let i = 0; i < 30; i++) {
+                parallaxContainer.appendChild(createLeaf());
+            }
+            setInterval(() => {
+                const leaves = document.querySelectorAll('.leaf');
+                if (leaves.length < 25) {
+                    parallaxContainer.appendChild(createLeaf());
+                }
+            }, 5000);
         }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => { if (typeof window.showToast === 'function') { window.showToast('🌈 Bem-vindo ao Press Start!'); } else { showToastMessage('🌈 Bem-vindo ao Press Start!'); } }, 1500);
-            setTimeout(() => { if (typeof window.showToast === 'function') { window.showToast('🎮 Clique no robô para conversar com a Prof!'); } else { showToastMessage('🎮 Clique no robô para conversar com a Prof!'); } }, 4000);
-        });
-        
+
+        // Confetti
         function createConfetti() {
-            const confetti = document.createElement('div'); confetti.className = 'confetti';
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
             const colors = ['#FF69B4', '#FFD700', '#87CEEB', '#6FCF97', '#B983FF'];
             confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-            confetti.style.left = Math.random() * 100 + 'vw'; confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
-            confetti.style.width = (Math.random() * 10 + 5) + 'px'; confetti.style.height = confetti.style.width;
-            document.body.appendChild(confetti); setTimeout(() => { confetti.remove(); }, 5000);
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+            confetti.style.width = (Math.random() * 10 + 5) + 'px';
+            confetti.style.height = confetti.style.width;
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 5000);
         }
-        
+
+        // Cards
         document.querySelectorAll('.card').forEach(card => {
             card.addEventListener('click', (e) => {
-                e.preventDefault(); for (let i = 0; i < 10; i++) { createConfetti(); }
-                if (typeof window.showToast === 'function') { window.showToast('🎉 Boa escolha! Vamos explorar!'); } else { showToastMessage('🎉 Boa escolha! Vamos explorar!'); }
-                setTimeout(() => { window.location.href = card.getAttribute('href'); }, 500);
+                e.preventDefault();
+                for (let i = 0; i < 10; i++) createConfetti();
+                showToastMessage('🎉 Boa escolha! Vamos explorar!');
+                setTimeout(() => window.location.href = card.getAttribute('href'), 500);
             });
         });
-        
-        document.querySelector('.user-badge')?.addEventListener('click', function() { if (typeof window.showToast === 'function') { window.showToast('✨ Olá, amiguinho! ✨'); } else { showToastMessage('✨ Olá, amiguinho! ✨'); } });
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function () {
+            loadTopbar();
+            generateStars();
+
+            setTimeout(() => showToastMessage('🌈 Bem-vindo ao Press Start!'), 1500);
+            setTimeout(() => showToastMessage('🎮 Clique no menu ☰ para navegar!'), 4000);
+        });
+
         window.showToast = showToastMessage;
     </script>
 </body>
+
 </html>

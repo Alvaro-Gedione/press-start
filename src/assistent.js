@@ -12,7 +12,7 @@ const APPS_SCRIPT_URL = window.ENV?.APPS_SCRIPT_URL;
 
 // Validação simples
 if (!GEMINI_API_KEY || GEMINI_API_KEY === "COLE_SUA_CHAVE_NOVA_AQUI") {
-    console.warn("⚠️ Configure a API Key no arquivo config.js!");
+    //console.warn("⚠️ Configure a API Key no arquivo config.js!");
 }
 
 // URL da API Gemini (usando modelo flash para respostas rápidas)
@@ -86,7 +86,7 @@ document.body.appendChild(debugElement);
 
 function setDebug(text) {
     debugElement.textContent = text;
-    console.log('[Robô Livreto]', text);
+    //console.log('[Robô Livreto]', text);
 }
 
 // ======================================================
@@ -125,7 +125,7 @@ async function processarComGemini(textoUsuario) {
         // Tratamento de erro HTTP
         if (!response.ok) {
             const errorDetails = await response.text();
-            console.error("Erro na API Gemini:", errorDetails);
+            //console.error("Erro na API Gemini:", errorDetails);
             throw new Error(`Erro na API: ${response.status}`);
         }
 
@@ -155,7 +155,7 @@ async function processarComGemini(textoUsuario) {
                     executarNoAppScript(comando);
                 } else {
                     // Simulação para teste
-                    console.log("🔧 Simulando ação no Apps Script:", comando);
+                    //console.log("🔧 Simulando ação no Apps Script:", comando);
                     bubbleText.innerText = `📋 Anotei aqui: ${comando.funcao}!\n(Livro: ${comando.dados?.titulo || 'sem título'})`;
 
                     // Depois de 3 segundos, volta ao normal
@@ -173,7 +173,7 @@ async function processarComGemini(textoUsuario) {
         }
 
     } catch (erro) {
-        console.error("Erro no processamento:", erro);
+        //console.error("Erro no processamento:", erro);
         bubbleText.innerText = "Ops! Minhas engrenagens deram uma travadinha. Tente de novo! 🔧👩‍🏫";
     }
 }
@@ -203,7 +203,7 @@ async function executarNoAppScript(comandoJson) {
         }
 
     } catch (error) {
-        console.error("Erro ao conectar com Apps Script:", error);
+        //console.error("Erro ao conectar com Apps Script:", error);
         bubbleText.innerText = "Não consegui me conectar com meu caderno mágico, mas anotei aqui! 📝👩‍🏫";
 
         // Fallback: mostra o comando
@@ -299,7 +299,7 @@ if (SpeechRecognition) {
     };
 
     recognition.onerror = (event) => {
-        console.log("Erro no reconhecimento de voz:", event.error);
+        //console.log("Erro no reconhecimento de voz:", event.error);
         setDebug(`Erro voz: ${event.error}`);
 
         // Se for erro de permissão, tenta de novo em 5s
@@ -321,7 +321,7 @@ if (SpeechRecognition) {
             setTimeout(() => helpEmoji.classList.remove('listening'), 3000);
         }
     } catch (error) {
-        console.log("Não foi possível iniciar voz automaticamente. Aguardando interação...");
+        //console.log("Não foi possível iniciar voz automaticamente. Aguardando interação...");
 
         // Tenta iniciar na primeira interação do usuário
         document.body.addEventListener('click', function startVoiceOnce() {
@@ -334,7 +334,7 @@ if (SpeechRecognition) {
     }
 
 } else {
-    console.warn("Navegador não suporta reconhecimento de voz");
+    //console.warn("Navegador não suporta reconhecimento de voz");
     if (bubbleText) {
         bubbleText.innerText = "Dica: Para falar comigo, use um navegador como Chrome ou Edge! 🌐👩‍🏫";
     }
