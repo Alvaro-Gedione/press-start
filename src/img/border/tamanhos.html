@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borda Pixel Art - Sprites Separados</title>
+    <style>
+        :root {
+            /* Sprite sheet original */
+            --sprite-full: url('TreeSpriteSheet.png');
+            
+            /* Cada sprite separado com suas dimensões específicas */
+            /* Considerando que TreeSpriteSheet.png tem 400x400px 
+               e cada sprite ocupa 80x80px (5x5 grid) */
+            
+            /* Cantos - 90 graus */
+            --angulo-90-direito-topo: url('TreeSpriteSheet.png');
+            --angulo-90-esquerdo-topo: url('TreeSpriteSheet.png');
+            --angulo-90-direito-base: url('TreeSpriteSheet.png');
+            --angulo-90-esquerdo-base: url('TreeSpriteSheet.png');
+            
+            /* Preenchimentos */
+            --preenchimento-topo: url('TreeSpriteSheet.png');
+            --preenchimento-base: url('TreeSpriteSheet.png');
+            --preenchimento-lado-direito: url('TreeSpriteSheet.png');
+            --preenchimento-lado-esquerdo: url('TreeSpriteSheet.png');
+        }
+        
+        /* Configuração de cada sprite com posição e tamanho específicos */
+        .sprite-preview {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        
+        .sprite-box {
+            display: inline-block;
+            border: 2px solid #333;
+            margin: 5px;
+            background-repeat: no-repeat;
+        }
+        
+        /* 1. Ângulo 90° Direito Topo (canto superior direito) - 80x80px */
+        .angulo-direito-topo {
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: 0px -121px; /* Coluna 1, Linha 0 */
+            background-repeat: no-repeat;
+            /*expelhar o lado direito*/
+            transform: scaleX(-1);
+        }
+        
+        /* 2. Ângulo 90° Esquerdo Topo (canto superior esquerdo) - 80x80px */
+        .angulo-esquerdo-topo {
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: 0px -121px; /* Coluna 1, Linha 0 */
+            background-repeat: no-repeat;
+        }
+        
+        /* 3. Ângulo 90° Direito Base (canto inferior direito) - 80x80px */
+        .angulo-direito-base {
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: -371px -121px; /* Coluna 1, Linha 5 */
+            background-repeat: no-repeat;
+            /*expelhar o lado direito*/
+            transform: scaleX(-1);
+        }
+        
+        /* 4. Ângulo 90° Esquerdo Base (canto inferior esquerdo) - 80x80px */
+        .angulo-esquerdo-base {
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: -371px -121px; /* Coluna 1, Linha 5 */
+            background-repeat: no-repeat;
+        }
+        
+        /* 5. Preenchimento Topo (borda superior horizontal) - 80x80px cada tile */
+        .preenchimento-topo {
+            width: 638px;
+            height: 120px;
+            background-image: var(--sprite-full);
+            background-position: 0px 0px; /* Coluna 2, Linha 0 */
+            background-repeat: repeat-x;
+        }
+        
+        /* 6. Preenchimento Base (borda inferior horizontal) - 80x80px cada tile */
+        .preenchimento-base {
+            width: 483px;
+            height: 56px;
+            background-image: var(--sprite-full);
+            background-position: 0px -335px; /* Coluna 2, Linha 5 */
+            background-repeat: repeat-x;
+        }
+        
+        /* 7. Preenchimento Lado Direito (borda direita vertical) - 80x80px cada tile */
+        .preenchimento-lado-direito {
+            width: 65px;
+            height: 43px;
+            background-image: var(--sprite-full);
+            background-position: 0px -271px; /* Coluna 4, Linha 2 */
+            background-repeat: repeat-y;
+            /*expelhar o lado Esquerdo*/
+            transform: scaleX(-1);
+        }
+        
+        /* 8. Preenchimento Lado Esquerdo (borda esquerda vertical) - 80x80px cada tile */
+        .preenchimento-lado-esquerdo {
+            width: 65px;
+            height: 43px;
+            background-image: var(--sprite-full);
+            background-position: -371px -165px; /* Coluna 1, Linha 2 */
+            background-repeat: repeat-y;
+        }
+        
+        /* Demo de borda completa usando os sprites separados */
+        .borda-personalizada {
+            width: 600px;
+            min-height: 300px;
+            margin: 50px auto;
+            position: relative;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+        }
+        
+        /* Estrutura da borda com sprites individuais */
+        .borda-completa {
+            position: relative;
+            width: 100%;
+            min-height: 300px;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        /* Camadas da borda */
+        .borda-canto-tl {
+            position: absolute;
+            top: -40px;
+            left: -40px;
+            width: 80px;
+            height: 80px;
+            background-image: var(--sprite-full);
+            background-position: 0px 0px;
+            z-index: 10;
+        }
+        
+        .borda-canto-tr {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 80px;
+            height: 80px;
+            background-image: var(--sprite-full);
+            background-position: -240px 0px;
+            z-index: 10;
+        }
+        
+        .borda-canto-bl {
+            position: absolute;
+            bottom: -40px;
+            left: -40px;
+            width: 80px;
+            height: 80px;
+            background-image: var(--sprite-full);
+            background-position: 0px -320px;
+            z-index: 10;
+        }
+        
+        .borda-canto-br {
+            position: absolute;
+            bottom: -40px;
+            right: -40px;
+            width: 80px;
+            height: 80px;
+            background-image: var(--sprite-full);
+            background-position: -240px -320px;
+            z-index: 10;
+        }
+        
+        .borda-topo {
+            position: absolute;
+            top: -40px;
+            left: 40px;
+            right: 40px;
+            height: 80px;
+            background-image: var(--sprite-full);
+            background-position: -80px 0px;
+            background-repeat: repeat-x;
+            z-index: 9;
+        }
+        
+        .borda-base {
+            position: absolute;
+            bottom: -40px;
+            left: 40px;
+            right: 40px;
+            height: 80px;
+            background-image: var(--sprite-full);
+            background-position: -80px -320px;
+            background-repeat: repeat-x;
+            z-index: 9;
+        }
+        
+        .borda-esquerda {
+            position: absolute;
+            left: -40px;
+            top: 40px;
+            bottom: 40px;
+            width: 80px;
+            background-image: var(--sprite-full);
+            background-position: 0px -80px;
+            background-repeat: repeat-y;
+            z-index: 9;
+        }
+        
+        .borda-direita {
+            position: absolute;
+            right: -40px;
+            top: 40px;
+            bottom: 40px;
+            width: 80px;
+            background-image: var(--sprite-full);
+            background-position: -240px -80px;
+            background-repeat: repeat-y;
+            z-index: 9;
+        }
+        
+        .conteudo-interno {
+            padding: 50px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .preview-container {
+            text-align: center;
+            padding: 20px;
+            background: #ddd;
+            margin: 20px;
+            border-radius: 10px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            display: inline-block;
+        }
+        
+        .info-sprite {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        
+        th, td {
+            border: 1px solid #999;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        td {
+            background-color: #f9f9f9;
+        }
+        
+        .medidas {
+            font-family: monospace;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: #2c3e50;">🎮 Separação de Sprites da Borda Pixel Art</h1>
+    
+    <!-- Preview dos sprites individuais -->
+    <div class="preview-container">
+        <h2>📦 Sprites Individuais (80x80px cada)</h2>
+        
+        <div>
+            <div class="sprite-preview">
+                <div class="sprite-box angulo-esquerdo-topo"></div>
+                <div class="info-sprite">Ângulo 90°<br>Esquerdo Topo<br><span class="medidas">(0px, 0px) - 80x80px</span></div>
+            </div>
+            
+            <div class="sprite-preview">
+                <div class="sprite-box angulo-direito-topo"></div>
+                <div class="info-sprite">Ângulo 90°<br>Direito Topo<br><span class="medidas">(240px, 0px) - 80x80px</span></div>
+            </div>
+            
+            <div class="sprite-preview">
+                <div class="sprite-box preenchimento-topo"></div>
+                <div class="info-sprite">Preenchimento Topo<br><span class="medidas">(80px, 0px) - 80x80px<br>Repete horizontalmente</span></div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="sprite-preview">
+                <div class="sprite-box angulo-esquerdo-base"></div>
+                <div class="info-sprite">Ângulo 90°<br>Esquerdo Base<br><span class="medidas">(0px, 320px) - 80x80px</span></div>
+            </div>
+            
+            <div class="sprite-preview">
+                <div class="sprite-box angulo-direito-base"></div>
+                <div class="info-sprite">Ângulo 90°<br>Direito Base<br><span class="medidas">(240px, 320px) - 80x80px</span></div>
+            </div>
+            
+            <div class="sprite-preview">
+                <div class="sprite-box preenchimento-base"></div>
+                <div class="info-sprite">Preenchimento Base<br><span class="medidas">(80px, 320px) - 80x80px<br>Repete horizontalmente</span></div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="sprite-preview">
+                <div class="sprite-box preenchimento-lado-esquerdo"></div>
+                <div class="info-sprite">Preenchimento<br>Lado Esquerdo<br><span class="medidas">(0px, 80px) - 80x80px<br>Repete verticalmente</span></div>
+            </div>
+            
+            <div class="sprite-preview">
+                <div class="sprite-box preenchimento-lado-direito"></div>
+                <div class="info-sprite">Preenchimento<br>Lado Direito<br><span class="medidas">(240px, 80px) - 80x80px<br>Repete verticalmente</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabela de especificações -->
+    <table>
+        <thead>
+            <tr><th>Sprite</th><th>Posição de Origem (X, Y)</th><th>Largura x Altura</th><th>Repetição</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Ângulo 90° Esquerdo Topo</td><td class="medidas">0px, 0px</td><td>80px x 80px</td><td>Sem repetição</td></tr>
+            <tr><td>Ângulo 90° Direito Topo</td><td class="medidas">-240px, 0px</td><td>80px x 80px</td><td>Sem repetição</td></tr>
+            <tr><td>Ângulo 90° Esquerdo Base</td><td class="medidas">0px, -320px</td><td>80px x 80px</td><td>Sem repetição</td></tr>
+            <tr><td>Ângulo 90° Direito Base</td><td class="medidas">-240px, -320px</td><td>80px x 80px</td><td>Sem repetição</td></tr>
+            <tr><td>Preenchimento Topo</td><td class="medidas">-80px, 0px</td><td>80px x 80px</td><td>repeat-x</td></tr>
+            <tr><td>Preenchimento Base</td><td class="medidas">-80px, -320px</td><td>80px x 80px</td><td>repeat-x</td></tr>
+            <tr><td>Preenchimento Lado Esquerdo</td><td class="medidas">0px, -80px</td><td>80px x 80px</td><td>repeat-y</td></tr>
+            <tr><td>Preenchimento Lado Direito</td><td class="medidas">-240px, -80px</td><td>80px x 80px</td><td>repeat-y</td></tr>
+        </tbody>
+    </table>
+    
+    <!-- Demonstração da borda completa usando sprites separados -->
+    <div class="preview-container">
+        <h2>🖼️ Borda Completa (montada com sprites individuais)</h2>
+        <div class="borda-completa">
+            <div class="borda-canto-tl"></div>
+            <div class="borda-canto-tr"></div>
+            <div class="borda-canto-bl"></div>
+            <div class="borda-canto-br"></div>
+            <div class="borda-topo"></div>
+            <div class="borda-base"></div>
+            <div class="borda-esquerda"></div>
+            <div class="borda-direita"></div>
+            <div class="conteudo-interno">
+                <h3>✨ Interface com Borda Pixel Art ✨</h3>
+                <p>Esta borda foi montada utilizando os 8 sprites separados:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>4 cantos (ângulos 90°)</li>
+                    <li>4 preenchimentos (topo, base, esquerda, direita)</li>
+                </ul>
+                <p><strong>Vantagens:</strong> Controle total sobre cada parte da borda, <br>
+                facilidade para animações individuais e maior flexibilidade.</p>
+            </div>
+        </div>
+        <div class="info-sprite" style="margin-top: 10px;">
+            ⚠️ Nota: Para visualizar corretamente, o arquivo 'TreeSpriteSheet.png' deve estar na mesma pasta.<br>
+            As posições assumem uma spritesheet de 400x400px com grid 5x5 de 80px cada.
+        </div>
+    </div>
+    
+    <!-- Versão alternativa com border-image original -->
+    <div class="preview-container">
+        <h2>🎨 Versão Original (border-image)</h2>
+        <div style="width: 80%; min-height: 200px; margin: 20px auto; padding: 40px; border-style: solid; border-width: 80px; border-image-source: url('TreeSpriteSheet.png'); border-image-slice: 25% 25% 25% 25%; border-image-repeat: repeat; background-color: #f4f4f4;">
+            <div style="text-align: center;">
+                <h3>Método border-image</h3>
+                <p>Usando o fatiamento automático do CSS.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+        <p>📐 Considerações para 'TreeSpriteSheet.png':</p>
+        <p>Grid assumido: 5 colunas × 5 linhas | Tamanho do tile: 80×80 pixels | Total: 400×400 pixels</p>
+        <p>🎯 Cada sprite foi extraído com base nessa grade. Ajuste as posições se sua spritesheet tiver dimensões diferentes.</p>
+    </div>
+</body>
+</html>

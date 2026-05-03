@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borda de Árvore com Sprite Sheet</title>
+    <style>
+        :root {
+            /* Coloque aqui o caminho exato da sua imagem */
+            --sprite-full: url('TreeSpriteSheet.png');
+        }
+
+        body {
+            margin: 0;
+            background-color: #2b2b36;
+            color: white;
+            font-family: sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- O CONTAINER PRINCIPAL --- */
+        .container-arvore {
+            position: fixed;
+            width: 100vw;
+            min-height: 100vh;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            resize: both;
+            pointer-events: none;
+        }
+
+        /* --- REGRAS GERAIS DOS ELEMENTOS DA BORDA --- */
+        .peca-arvore {
+            position: absolute;
+            pointer-events: none;
+            image-rendering: pixelated;
+        }
+
+        /* --- 1. A CAMADA DOS PREENCHIMENTOS (Ficam por Baixo: z-index 5) --- */
+        .preenchimento {
+            z-index: 5;
+        }
+
+        /* Preenchimento Topo: estica na horizontal, altura fixa de 120px */
+        .preenchimento-topo {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background-image: var(--sprite-full);
+            background-position: 0px 0px;
+            /* Coluna 2, Linha 0 */
+            background-repeat: repeat-x;
+        }
+
+        /* Preenchimento Base: estica na horizontal, altura fixa de 56px */
+        .preenchimento-base {
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            display: flex;
+            /* Transforma num container flexível */
+            overflow: hidden;
+            /* Esconde o que vazar da tela */
+        }
+
+        /* Pedaço individual que será repetido com 483px de largura */
+        .pedaco-base {
+            flex-shrink: 0;
+            /* Impede que o flexbox esprema os blocos */
+            width: 483px;
+            height: 100%;
+            background-image: var(--sprite-full);
+            background-position: 0px -335px;
+            /* Coluna 2, Linha 5 */
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+            /* Garante que a herança do pixelated não se perca */
+        }
+
+        /* Preenchimento Lado Esquerdo: estica na vertical, largura fixa de 55px */
+        .preenchimento-lado-esquerdo {
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 65px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Preenchimento Lado Direito: estica na vertical, largura fixa de 55px e espelhado */
+        .preenchimento-lado-direito {
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 65px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scaleX(-1);
+        }
+
+        /* Pedaço individual que será repetido na vertical */
+        .pedaco-lado {
+            flex-shrink: 0;
+            height: 43px;
+            background-image: var(--sprite-full);
+            background-position: -371px -165px;
+            background-repeat: no-repeat;
+        }
+
+
+        /* --- 2. A CAMADA DOS CANTOS (Ficam por Cima: z-index 10) --- */
+        .canto {
+            z-index: 10;
+        }
+
+        .angulo-esquerdo-topo {
+            top: 0;
+            left: 0;
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: 0px -121px;
+            background-repeat: no-repeat;
+        }
+
+        .angulo-direito-topo {
+            top: 0;
+            right: 0;
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: 0px -121px;
+            background-repeat: no-repeat;
+            transform: scaleX(-1);
+        }
+
+        .angulo-esquerdo-base {
+            bottom: 0;
+            left: 0;
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: -371px -121px;
+            background-repeat: no-repeat;
+        }
+
+        .angulo-direito-base {
+            bottom: 0;
+            right: 0;
+            width: 365px;
+            height: 212px;
+            background-image: var(--sprite-full);
+            background-position: -371px -121px;
+            background-repeat: no-repeat;
+            transform: scaleX(-1);
+        }
+
+        /* --- 3. A ÁREA DE CONTEÚDO --- */
+        .conteudo {
+            position: relative;
+            z-index: 15;
+            /* Fica acima de tudo, inclusive dos cantos */
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            /* O padding afasta o texto para que ele não fique escondido atrás dos troncos e folhas */
+            padding: 180px 100px 100px 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            color: #ffeb3b;
+            font-size: 3rem;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-arvore">
+        <!-- Preenchimentos (Fundo) -->
+        <div class="peca-arvore preenchimento preenchimento-topo"></div>
+        <div class="peca-arvore preenchimento preenchimento-base">
+            <!-- Adicionamos vários pedaços de 483px para cobrir a largura da tela -->
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+            <div class="pedaco-base"></div>
+        </div>
+        <div class="peca-arvore preenchimento preenchimento-lado-esquerdo">
+            <!-- Adicionamos 30 pedaços de 41px (cobre até 1230px de altura) -->
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+        </div>
+        <div class="peca-arvore preenchimento preenchimento-lado-direito">
+            <!-- Os mesmos 30 pedaços para a direita -->
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+            <div class="pedaco-lado"></div>
+        </div>
+
+        <!-- Cantos (Frente - escondendo as emendas) -->
+        <div class="peca-arvore canto angulo-esquerdo-topo"></div>
+        <div class="peca-arvore canto angulo-direito-topo"></div>
+        <div class="peca-arvore canto angulo-esquerdo-base"></div>
+        <div class="peca-arvore canto angulo-direito-base"></div>
+
+        <!-- O seu site em si -->
+        <div class="conteudo">
+            <h1>O SEU JOGO</h1>
+            <p>A borda agora repete corretamente e as imperfeições ficam escondidas debaixo dos cantos!</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
