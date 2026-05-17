@@ -4,12 +4,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Press Start - Escola Ideal</title>
+    <title>Press Start - Avaliação do Site</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="src/css/index.css">
+
+    <style>
+        /* Estilos específicos do formulário */
+        .form-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .dark-mode .form-container {
+            background: rgba(30, 30, 40, 0.95);
+            color: #fff;
+        }
+
+        .form-title {
+            font-size: 2.5rem;
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .dark-mode .form-subtitle {
+            color: #ccc;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .dark-mode .form-group label {
+            color: #fff;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #FF6B35;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Baloo 2', cursive;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .dark-mode .form-control {
+            background: #3a3a4a;
+            border-color: #5a5a6a;
+            color: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .rating-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .rating-option input {
+            display: none;
+        }
+
+        .rating-option label {
+            display: block;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0;
+        }
+
+        .dark-mode .rating-option label {
+            background: #3a3a4a;
+            color: white;
+        }
+
+        .rating-option input:checked+label {
+            background: #FF6B35;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .rating-option label:hover {
+            transform: translateY(-2px);
+            background: #FFD700;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Baloo 2', cursive;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .required-field::after {
+            content: '*';
+            color: red;
+            margin-left: 5px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #FF6B35;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #FFD700;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 20px;
+                padding: 25px;
+            }
+
+            .form-title {
+                font-size: 1.8rem;
+            }
+
+            .rating-container {
+                gap: 8px;
+            }
+
+            .rating-option label {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -45,32 +284,120 @@
     <div id="topbar-container"></div>
 
     <main>
-        <h1 class="main-title">Press Start: Escola Ideal</h1>
+        <div class="form-container">
+            <h1 class="form-title">
+                <i class="fa-solid fa-star"></i>
+                Avaliação do Site
+                <i class="fa-solid fa-star"></i>
+            </h1>
+            <p class="form-subtitle">Sua opinião é muito importante para nós! 🌟</p>
 
-        <div class="cards-container">
-            <a href="./src/pages/mySchool/game.html" class="card card-orange">
-                <i class="fa-solid fa-gamepad"></i>
-                <div class="card-content">
-                    <div class="card-title">Joguinho</div>
-                    <div class="card-subtitle">A escola dos sonhos</div>
+            <form id="evaluationForm">
+                <div class="form-group">
+                    <label for="nome">
+                        <i class="fa-solid fa-user"></i>
+                        Nome Completo
+                        <span class="required-field"></span>
+                    </label>
+                    <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome completo"
+                        required>
+                    <div class="error-message" id="nomeError">
+                        <i class="fa-solid fa-exclamation-circle"></i> Por favor, informe seu nome
+                    </div>
                 </div>
-            </a>
 
-            <a href="./src/pages/history/history.html" class="card card-yellow">
-                <i class="fa-solid fa-book-open"></i>
-                <div class="card-content">
-                    <div class="card-title">História</div>
-                    <div class="card-subtitle">Nossa trajetória</div>
+                <div class="form-group">
+                    <label for="cidade">
+                        <i class="fa-solid fa-city"></i>
+                        Cidade de Origem
+                        <span class="required-field"></span>
+                    </label>
+                    <input type="text" class="form-control" id="cidade" name="cidade"
+                        placeholder="Ex: São Paulo, Rio de Janeiro, Belo Horizonte..." required>
+                    <div class="error-message" id="cidadeError">
+                        <i class="fa-solid fa-exclamation-circle"></i> Por favor, informe sua cidade
+                    </div>
                 </div>
-            </a>
 
-            <a href="./src/pages/awards/awards.html" class="card card-blue">
-                <i class="fa-solid fa-trophy"></i>
-                <div class="card-content">
-                    <div class="card-title">Prêmios</div>
-                    <div class="card-subtitle">Reconhecimentos</div>
+                <div class="form-group">
+                    <label>
+                        <i class="fa-solid fa-chart-simple"></i>
+                        O que você achou do projeto?
+                        <span class="required-field"></span>
+                    </label>
+                    <div class="rating-container" id="ratingContainer">
+                        <div class="rating-option">
+                            <input type="radio" id="rating1" name="rating" value="1">
+                            <label for="rating1">1 😞</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating2" name="rating" value="2">
+                            <label for="rating2">2 😐</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating3" name="rating" value="3">
+                            <label for="rating3">3 🙂</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating4" name="rating" value="4">
+                            <label for="rating4">4 😊</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating5" name="rating" value="5">
+                            <label for="rating5">5 😃</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating6" name="rating" value="6">
+                            <label for="rating6">6 😄</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating7" name="rating" value="7">
+                            <label for="rating7">7 😁</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating8" name="rating" value="8">
+                            <label for="rating8">8 😍</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating9" name="rating" value="9">
+                            <label for="rating9">9 🤩</label>
+                        </div>
+                        <div class="rating-option">
+                            <input type="radio" id="rating10" name="rating" value="10">
+                            <label for="rating10">10 🎉</label>
+                        </div>
+                    </div>
+                    <div class="error-message" id="ratingError">
+                        <i class="fa-solid fa-exclamation-circle"></i> Por favor, selecione uma nota de 1 a 10
+                    </div>
                 </div>
-            </a>
+
+                <div class="form-group">
+                    <label for="sugestoes">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        Sugestões para o futuro
+                    </label>
+                    <textarea class="form-control" id="sugestoes" name="sugestoes"
+                        placeholder="Compartilhe suas ideias para melhorarmos ainda mais! 💡"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Enviar Avaliação
+                </button>
+
+                <div class="success-message" id="successMessage">
+                    <i class="fa-solid fa-check-circle"></i>
+                    Avaliação enviada com sucesso! Muito obrigado pelo seu feedback! 🌟
+                </div>
+            </form>
+
+            <div class="back-link">
+                <a href="javascript:history.back()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Voltar para página inicial
+                </a>
+            </div>
         </div>
     </main>
 
@@ -92,7 +419,7 @@
     <!-- Container do assistente -->
     <div class="assistant-wrapper" id="assistantContainer">
         <div class="speech-bubble" id="bubbleText">
-            Oi! Eu sou sua Prof. Clique em mim para conversarmos! 📖
+            Oi! Quer avaliar nosso Site? É rapidinho! 📝
         </div>
         <img src="src/img/Assistente00.png" alt="Assistente" class="assistant-char-img" id="assistantImage"
             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23FFD700\' /%3E%3Ccircle cx=\'35\' cy=\'40\' r=\'5\' fill=\'black\'/%3E%3Ccircle cx=\'65\' cy=\'40\' r=\'5\' fill=\'black\'/%3E%3Cpath d=\'M30 65 Q50 80,70 65\' stroke=\'black\' stroke-width=\'5\' fill=\'none\' /%3E%3C/svg%3E'">
@@ -223,17 +550,13 @@
             const menuOverlay = document.getElementById('menuOverlay');
             const closeMenuBtn = document.getElementById('closeMenuBtn');
 
-            console.log('Menu elements:', { menuToggle, mobileMenu, menuOverlay, closeMenuBtn }); // Debug
-
             function openMenu() {
-                console.log('Opening menu');
                 if (mobileMenu) mobileMenu.classList.add('active');
                 if (menuOverlay) menuOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
 
             function closeMenu() {
-                console.log('Closing menu');
                 if (mobileMenu) mobileMenu.classList.remove('active');
                 if (menuOverlay) menuOverlay.classList.remove('active');
                 document.body.style.overflow = '';
@@ -242,8 +565,6 @@
             if (menuToggle) {
                 menuToggle.removeEventListener('click', openMenu);
                 menuToggle.addEventListener('click', openMenu);
-            } else {
-                console.error('menuToggleBtn não encontrado!');
             }
 
             if (closeMenuBtn) {
@@ -256,7 +577,6 @@
                 menuOverlay.addEventListener('click', closeMenu);
             }
 
-            // Links do menu mobile
             document.querySelectorAll('.mobile-nav .nav-btn').forEach(link => {
                 link.removeEventListener('click', handleMobileLinkClick);
                 link.addEventListener('click', handleMobileLinkClick);
@@ -271,7 +591,6 @@
                 }
             }
 
-            // Theme toggle mobile
             const mobileThemeToggle = document.getElementById('mobileThemeToggle');
             if (mobileThemeToggle) {
                 mobileThemeToggle.removeEventListener('click', handleMobileThemeToggle);
@@ -355,12 +674,67 @@
             }, 5000);
         }
 
-        // Confetti
+        // Form submission handler
+        const form = document.getElementById('evaluationForm');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(msg => msg.classList.remove('show'));
+
+            let isValid = true;
+
+            // Validate name
+            const nome = document.getElementById('nome');
+            if (!nome.value.trim()) {
+                document.getElementById('nomeError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate city
+            const cidade = document.getElementById('cidade');
+            if (!cidade.value.trim()) {
+                document.getElementById('cidadeError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate rating
+            const ratingSelected = document.querySelector('input[name="rating"]:checked');
+            if (!ratingSelected) {
+                document.getElementById('ratingError').classList.add('show');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Show success message
+                const successMsg = document.getElementById('successMessage');
+                successMsg.classList.add('show');
+
+                // Show toast
+                showToastMessage('🎉 Avaliação enviada! Muito obrigado! 🌟');
+
+                // Create confetti celebration
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => createConfetti(), i * 50);
+                }
+
+                // Reset form after 3 seconds
+                setTimeout(() => {
+                    form.reset();
+                    successMsg.classList.remove('show');
+                }, 3000);
+            } else {
+                showToastMessage('⚠️ Por favor, preencha todos os campos obrigatórios!');
+            }
+        });
+
+        // Confetti function
         function createConfetti() {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
-            const colors = ['#FF69B4', '#FFD700', '#87CEEB', '#6FCF97', '#B983FF'];
-            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            const colors = ['#FF69B4', '#FFD700', '#87CEEB', '#6FCF97', '#B983FF', '#FF6B35'];
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
             confetti.style.left = Math.random() * 100 + 'vw';
             confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
             confetti.style.width = (Math.random() * 10 + 5) + 'px';
@@ -369,23 +743,13 @@
             setTimeout(() => confetti.remove(), 5000);
         }
 
-        // Cards
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
-                for (let i = 0; i < 10; i++) createConfetti();
-                showToastMessage('🎉 Boa escolha! Vamos explorar!');
-                setTimeout(() => window.location.href = card.getAttribute('href'), 500);
-            });
-        });
-
         // Inicialização
         document.addEventListener('DOMContentLoaded', function () {
             loadTopbar();
             generateStars();
 
-            setTimeout(() => showToastMessage('🌈 Bem-vindo ao Press Start!'), 1500);
-            setTimeout(() => showToastMessage('🎮 Clique no menu ☰ para navegar!'), 4000);
+            setTimeout(() => showToastMessage('📝 Queremos sua opinião! Avalie nosso Site!'), 1500);
+            setTimeout(() => showToastMessage('⭐ Dê uma nota de 1 a 10 para o projeto!'), 4000);
         });
 
         window.showToast = showToastMessage;

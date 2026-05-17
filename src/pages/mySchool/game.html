@@ -169,7 +169,7 @@
 
         .cloud {
             position: absolute;
-            background-image: url('../src/img/background/cloud.png');
+            background-image: url('../../img/background/cloud.png');
             background-size: contain;
             background-repeat: no-repeat;
             opacity: 0.7;
@@ -268,7 +268,7 @@
             left: 0;
             width: 100%;
             height: 35vh;
-            background-image: url('../src/img/background/ground02.png');
+            background-image: url('../../img/background/ground02.png');
             background-size: cover;
             background-position: top center;
             background-repeat: repeat-x;
@@ -283,7 +283,7 @@
             left: 0;
             width: 100%;
             height: 30vh;
-            background-image: url('../src/img/background/ground02.png');
+            background-image: url('../../img/background/ground02.png');
             background-size: cover;
             background-position: top center;
             background-repeat: repeat-x;
@@ -299,7 +299,7 @@
             left: 0;
             width: 100%;
             height: 45vh;
-            background-image: url('../src/img/background/ground.png');
+            background-image: url('../../img/background/ground.png');
             background-size: cover;
             background-position: top center;
             background-repeat: repeat-x;
@@ -311,7 +311,7 @@
         /* Folhas caindo */
         .leaf {
             position: absolute;
-            background-image: url('../src/img/background/leave.png');
+            background-image: url('../../img/background/leave.png');
             background-size: contain;
             background-repeat: no-repeat;
             opacity: 0.6;
@@ -1225,22 +1225,21 @@
         <div class="cloud cloud-4"></div>
         <div class="cloud cloud-5"></div>
         <div class="layer-ground-back"></div>
-        <img src="../src/img/background/school.png" class="layer-school" alt="Escola">
-        <img src="../src/img/background/tree.png" class="layer-tree-1" alt="Árvore 1">
-        <img src="../src/img/background/tree.png" class="layer-tree-2" alt="Árvore 2">
+        <img src="../../img/background/school.png" class="layer-school" alt="Escola">
+        <img src="../../img/background/tree.png" class="layer-tree-1" alt="Árvore 1">
+        <img src="../../img/background/tree.png" class="layer-tree-2" alt="Árvore 2">
         <div class="layer-ground-mid"></div>
         <div class="layer-ground-front"></div>
     </div>
 
     <header>
         <div class="logo">
-            <img src="../src/img/logo.png" alt="PRESS START" id="logo-img">
+            <img src="../../img/logo.png" alt="PRESS START" id="logo-img">
         </div>
         <nav>
             <a href="#" class="nav-btn bg-orange"><i class="fa-solid fa-gamepad"></i> Joguinho</a>
             <a href="#" class="nav-btn bg-yellow"><i class="fa-solid fa-book-open"></i> História</a>
             <a href="#" class="nav-btn bg-red"><i class="fa-solid fa-gear"></i> Configuração</a>
-            <!-- POR ESTE BLOCO -->
             <div class="user-badge">
                 <i class="fas fa-sun" id="themeToggle"></i>
                 <div class="user-info">
@@ -1299,6 +1298,7 @@
                 <div class="touch-btn" data-direction="up">⬆️</div>
                 <div class="touch-btn" data-direction="down">⬇️</div>
                 <div class="touch-btn" data-direction="right">➡️</div>
+                <div class="touch-btn" id="interactBtn" style="background: rgba(231, 76, 60, 0.9);">🔘</div>
             </div>
             <div class="game-info">
                 <span>🎮 Toque nos botões ou no chão</span>
@@ -1311,7 +1311,7 @@
     <div id="magicToast" class="magic-toast"><i class="fas fa-magic"></i><span id="toastMessage">✨ Mensagem</span></div>
     <div class="assistant-wrapper" id="assistantContainer">
         <div class="speech-bubble" id="bubbleText">🎮 Olá! Use os botões ou toque no chão!</div>
-        <img src="../src/img/Assistente00.png" alt="Assistente" class="assistant-char-img" id="assistantImage">
+        <img src="../../img/Assistente00.png" alt="Assistente" class="assistant-char-img" id="assistantImage">
     </div>
 
     <div id="nameModal" class="name-modal" style="display: none;">
@@ -1322,9 +1322,7 @@
             </div>
             <div class="name-modal-body">
                 <input type="text" id="playerNameInput" class="name-input" maxlength="15" placeholder="Digite seu nome">
-                <div class="keyboard-container" id="keyboardContainer">
-                    <!-- Teclado virtual será gerado aqui -->
-                </div>
+                <div class="keyboard-container" id="keyboardContainer"></div>
             </div>
             <div class="name-modal-footer">
                 <button id="confirmNameBtn" class="confirm-name-btn">
@@ -1333,36 +1331,34 @@
             </div>
         </div>
     </div>
+
+    <script src="./src/scripts/objects.js"></script>
+    <script src="./src/scripts/entrance.js"></script>
+    <script src="./src/scripts/hallway00.js"></script>
+    <script src="./src/scripts/hallway01.js"></script>
+    <script src="./src/scripts/hallway02.js"></script>
+    <script src="./src/scripts/classroom.js"></script>
     <script>
         // ============================================================
-        // LISTA DE PERSONAGENS (mesma do jogo original)
+        // LISTA DE PERSONAGENS
         // ============================================================
         const characterFolders = ["boy00", "boy01", "boy03", "boy04", "boy05", "girl00", "girl01", "girl02", "girl03"];
-
         const personagens = characterFolders.map(folder => {
             let nomeAmigavel = folder.replace('boy', '👦 ').replace('girl', '👧 ');
             return { id: folder, nome: nomeAmigavel, folder: folder, emoji: nomeAmigavel.charAt(0) };
         });
 
         let currentIndex = 0;
-        let selectedCharacterId = null;
-
-        // Carregar do localStorage
-        const savedChar = localStorage.getItem('selectedCharacter');
-        if (savedChar && personagens.some(c => c.id === savedChar)) {
-            selectedCharacterId = savedChar;
-            currentIndex = personagens.findIndex(c => c.id === savedChar);
-        } else {
+        let selectedCharacterId = localStorage.getItem('selectedCharacter');
+        if (!selectedCharacterId || !personagens.some(c => c.id === selectedCharacterId)) {
             selectedCharacterId = personagens[0].id;
-            currentIndex = 0;
         }
+        currentIndex = personagens.findIndex(c => c.id === selectedCharacterId);
 
-        // Configurações Matemáticas do 3D
         const theta = 360 / personagens.length;
         const raio = Math.round(125 / Math.tan(Math.PI / personagens.length)) + 40;
         let rotacaoAtual = -currentIndex * theta;
 
-        // Elementos
         const carouselScreen = document.getElementById('carouselScreen');
         const gameScreenDiv = document.getElementById('gameScreen');
         const carousel3d = document.getElementById('carousel3d');
@@ -1372,125 +1368,99 @@
         const resetSelBtn = document.getElementById('resetSelectionBtn');
         const indicatorsContainer = document.getElementById('indicators');
 
-        // Construir cards 3D
         function construirCards3D() {
             carousel3d.innerHTML = '';
             personagens.forEach((personagem, i) => {
                 const card = document.createElement('div');
                 card.className = 'carousel-card';
                 card.style.transform = `rotateY(${i * theta}deg) translateZ(${raio}px)`;
-
                 const wrapper = document.createElement('div');
                 wrapper.className = 'carousel-img-wrapper';
-
                 const img = document.createElement('img');
                 img.className = 'carousel-character-img';
                 img.alt = personagem.nome;
-                const imgPath = `./src/img/${personagem.folder}/static.png`;
-                const tempImg = new Image();
-                tempImg.onload = () => { img.src = imgPath; };
-                tempImg.onerror = () => {
-                    img.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='30' fill='%232EC4B6'/%3E%3Ctext x='50' y='67' font-size='48' text-anchor='middle' fill='white' font-weight='bold' dy='.3em'%3E${personagem.emoji}%3C/text%3E%3C/svg%3E`;
-                };
-                img.src = imgPath;
-
+                img.src = `./src/img/characters/${personagem.folder}/static.png`;
+                img.onerror = () => img.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='30' fill='%232EC4B6'/%3E%3Ctext x='50' y='67' font-size='48' text-anchor='middle' fill='white'%3E${personagem.emoji}%3C/text%3E%3C/svg%3E`;
                 const nome = document.createElement('div');
                 nome.className = 'carousel-name';
                 nome.textContent = personagem.nome;
-
                 wrapper.appendChild(img);
                 card.appendChild(wrapper);
                 card.appendChild(nome);
                 carousel3d.appendChild(card);
             });
         }
-
         function atualizarCarrossel() {
             carousel3d.style.transform = `translateZ(${-raio}px) rotateY(${rotacaoAtual}deg)`;
             selectedCharacterId = personagens[currentIndex].id;
-            atualizarIndicadores();
+            document.querySelectorAll('.indicator').forEach((ind, idx) => {
+                if (idx === currentIndex) ind.classList.add('active');
+                else ind.classList.remove('active');
+            });
+            localStorage.setItem('selectedCharacter', selectedCharacterId);
         }
-
         function criarIndicadores() {
             indicatorsContainer.innerHTML = '';
             personagens.forEach((_, index) => {
                 const indicador = document.createElement('div');
                 indicador.classList.add('indicator');
                 if (index === currentIndex) indicador.classList.add('active');
-                indicador.addEventListener('click', () => irPara(index));
+                indicador.addEventListener('click', () => {
+                    let diff = index - currentIndex;
+                    if (Math.abs(diff) > personagens.length / 2) diff += (diff > 0 ? -personagens.length : personagens.length);
+                    rotacaoAtual -= diff * theta;
+                    currentIndex = index;
+                    atualizarCarrossel();
+                    showToast(`✨ ${personagens[index].nome} selecionado! ✨`, 1200);
+                });
                 indicatorsContainer.appendChild(indicador);
             });
         }
-
-        function atualizarIndicadores() {
-            const indicators = document.querySelectorAll('.indicator');
-            indicators.forEach((indicator, index) => {
-                if (index === currentIndex) indicator.classList.add('active');
-                else indicator.classList.remove('active');
-            });
-        }
-
-        function irPara(index) {
-            if (index === currentIndex) return;
-            let diff = index - currentIndex;
-            if (Math.abs(diff) > personagens.length / 2) {
-                if (diff > 0) diff -= personagens.length;
-                else diff += personagens.length;
-            }
-            rotacaoAtual -= diff * theta;
-            currentIndex = index;
-            atualizarCarrossel();
-            showToast(`✨ ${personagens[index].nome} selecionado! ✨`, 1200);
-            localStorage.setItem('selectedCharacter', selectedCharacterId);
-        }
-
-        function anterior() {
-            currentIndex = (currentIndex - 1 + personagens.length) % personagens.length;
-            rotacaoAtual += theta;
-            atualizarCarrossel();
-            showToast(`✨ ${personagens[currentIndex].nome} será seu companheiro! ✨`, 1200);
-            localStorage.setItem('selectedCharacter', selectedCharacterId);
-        }
-
-        function proximo() {
-            currentIndex = (currentIndex + 1) % personagens.length;
-            rotacaoAtual -= theta;
-            atualizarCarrossel();
-            showToast(`✨ ${personagens[currentIndex].nome} será seu companheiro! ✨`, 1200);
-            localStorage.setItem('selectedCharacter', selectedCharacterId);
-        }
-
-        prevBtn.addEventListener('click', anterior);
-        nextBtn.addEventListener('click', proximo);
-
-        resetSelBtn.addEventListener('click', () => {
-            localStorage.removeItem('selectedCharacter');
-            currentIndex = 0;
-            selectedCharacterId = personagens[0].id;
-            rotacaoAtual = -currentIndex * theta;
-            atualizarCarrossel();
-            showToast(`🔄 Personagem resetado para ${personagens[0].nome}! 🔄`, 1500);
-            localStorage.setItem('selectedCharacter', selectedCharacterId);
-        });
-
-        // Inicializa carrossel
+        prevBtn.addEventListener('click', () => { currentIndex = (currentIndex - 1 + personagens.length) % personagens.length; rotacaoAtual += theta; atualizarCarrossel(); showToast(`✨ ${personagens[currentIndex].nome} será seu companheiro! ✨`, 1200); });
+        nextBtn.addEventListener('click', () => { currentIndex = (currentIndex + 1) % personagens.length; rotacaoAtual -= theta; atualizarCarrossel(); showToast(`✨ ${personagens[currentIndex].nome} será seu companheiro! ✨`, 1200); });
+        resetSelBtn.addEventListener('click', () => { currentIndex = 0; rotacaoAtual = 0; atualizarCarrossel(); showToast(`🔄 Personagem resetado para ${personagens[0].nome}! 🔄`, 1500); });
         construirCards3D();
         criarIndicadores();
         atualizarCarrossel();
 
         // ============================================================
-        // JOGO COM SPRITES (mesmo código original)
+        // SISTEMA DE CENAS E MOVIMENTAÇÃO
         // ============================================================
-        let gameInitialized = false;
-        let currentCharacterFolder = '';
-        let playerSprites = {};
-        let animFrameId = null;
-
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const posDisplay = document.getElementById('posDisplay');
         const SPEED = 4;
 
+        // Gerenciamento de Cenas
+        let currentScene = null;
+        const scenes = {
+            'entrance': new EntranceScene(),
+            'hallway00': new Hallway00Scene(),
+            'hallway01': new Hallway01Scene(),
+            'hallway02': new Hallway02Scene(),
+            'classroom': new ClassroomScene()
+        };
+
+        function changeScene(sceneData) {
+            const sceneName = typeof sceneData === 'string' ? sceneData : sceneData.nextScene;
+            if (!scenes[sceneName]) return;
+
+            console.log(`Mudando para cena: ${sceneName}`);
+            currentScene = scenes[sceneName].init();
+
+            // Reposiciona o jogador baseado nos dados da transição
+            if (typeof sceneData === 'object') {
+                if (sceneData.startX !== undefined) player.x = sceneData.startX;
+                if (sceneData.startY !== undefined) player.y = sceneData.startY;
+            }
+
+            player.targetX = null;
+            player.targetY = null;
+
+            showToast(`📍 Entrando em: ${sceneName.toUpperCase()}`, 1500);
+        }
+
+        // Variáveis do jogador
         const player = {
             x: 400, y: 300, width: 64, height: 64,
             direction: 'static', frame: 0, lastFrameUpdate: 0,
@@ -1498,8 +1468,12 @@
             sprites: {}
         };
 
+        // Sprites do personagem
         const neededSprites = ['static', 'down00', 'down01', 'up00', 'up01', 'left00', 'left01'];
+        let gameInitialized = false;
+        let animFrameId = null;
 
+        // Carregar sprites
         function loadSpritesForCharacter(folderPath) {
             return new Promise((resolve) => {
                 let loaded = 0;
@@ -1508,39 +1482,51 @@
                 neededSprites.forEach(spriteKey => {
                     let fileName = spriteKey === 'static' ? 'static.png' : `${spriteKey}.png`;
                     const img = new Image();
-                    img.onload = () => {
-                        spritesMap[spriteKey] = img;
-                        loaded++;
-                        if (loaded === total) resolve(spritesMap);
-                    };
+                    img.onload = () => { spritesMap[spriteKey] = img; loaded++; if (loaded === total) resolve(spritesMap); };
                     img.onerror = () => {
                         const fallbackCanvas = document.createElement('canvas');
-                        fallbackCanvas.width = 64;
-                        fallbackCanvas.height = 64;
+                        fallbackCanvas.width = 64; fallbackCanvas.height = 64;
                         const fctx = fallbackCanvas.getContext('2d');
-                        fctx.fillStyle = '#c0a080';
-                        fctx.fillRect(0, 0, 64, 64);
-                        fctx.fillStyle = '#333';
-                        fctx.font = 'bold 30px sans-serif';
-                        fctx.fillText('?', 20, 48);
+                        fctx.fillStyle = '#c0a080'; fctx.fillRect(0, 0, 64, 64);
+                        fctx.fillStyle = '#333'; fctx.font = 'bold 30px sans-serif'; fctx.fillText('?', 20, 48);
                         spritesMap[spriteKey] = fallbackCanvas;
-                        loaded++;
-                        if (loaded === total) resolve(spritesMap);
+                        loaded++; if (loaded === total) resolve(spritesMap);
                     };
-                    img.src = `./src/img/${folderPath}/${fileName}`;
+                    img.src = `./src/img/characters/${folderPath}/${fileName}`;
                 });
             });
         }
 
+        // Função de movimento adaptada para cenas
+        function tryMove(dx, dy) {
+            if (!currentScene) return false;
+
+            return currentScene.processMovement(player, dx, dy, (msg) => {
+                showToast(msg, 1500);
+            });
+        }
+
+        // Controles
         let touchDirections = { up: false, down: false, left: false, right: false };
         let keys = {};
 
         function attachControls() {
             window.addEventListener('keydown', e => {
                 keys[e.key] = true;
-                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(e.key)) e.preventDefault();
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', ' '].includes(e.key)) e.preventDefault();
+
+                // Interação com espaço
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                    handleInteraction();
+                }
             });
             window.addEventListener('keyup', e => keys[e.key] = false);
+
+            const interactBtn = document.getElementById('interactBtn');
+            if (interactBtn) {
+                interactBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteraction(); });
+                interactBtn.addEventListener('mousedown', (e) => { e.preventDefault(); handleInteraction(); });
+            }
             document.querySelectorAll('.touch-btn').forEach(btn => {
                 const dir = btn.getAttribute('data-direction');
                 const start = (e) => { e.preventDefault(); touchDirections[dir] = true; btn.style.transform = 'scale(0.95)'; };
@@ -1552,6 +1538,58 @@
                 btn.addEventListener('mouseup', end);
                 btn.addEventListener('mouseleave', end);
             });
+        }
+
+        function handleInteraction() {
+            if (!currentScene) return;
+
+            // Primeiro verifica se a cena atual tem um método específico para porta
+            if (currentScene.interactWithDoor) {
+                const message = currentScene.interactWithDoor();
+                if (message) {
+                    showToast(message, 1500);
+                    return;
+                }
+            }
+
+            // Procura objeto interativo próximo (incluindo portas)
+            const proximityRange = 60;
+            const playerRect = {
+                x: player.x - proximityRange,
+                y: player.y - proximityRange,
+                width: player.width + proximityRange * 2,
+                height: player.height + proximityRange * 2
+            };
+
+            for (let obj of currentScene.objects) {
+                if (obj.type === 'interactive' || obj.type === 'door') {
+                    // Verifica se o objeto está dentro do range de proximidade
+                    const objRect = { x: obj.x, y: obj.y, width: obj.width, height: obj.height };
+                    if (!(playerRect.x + playerRect.width <= objRect.x ||
+                        playerRect.x >= objRect.x + objRect.width ||
+                        playerRect.y + playerRect.height <= objRect.y ||
+                        playerRect.y >= objRect.y + objRect.height)) {
+
+                        console.log(`Interagindo com: ${obj.name || 'objeto'}`);
+
+                        // Se for porta e tiver método interact
+                        if (obj.interact) {
+                            const result = obj.interact();
+                            if (result && result.message) {
+                                showToast(result.message, 1500);
+                            }
+                        } else if (obj.interact) {
+                            const result = obj.interact();
+                            if (result && result.message) {
+                                showToast(result.message, 1500);
+                            }
+                        } else {
+                            showToast(`Interagiu com ${obj.name || 'objeto'}`, 1000);
+                        }
+                        break;
+                    }
+                }
+            }
         }
 
         function handleCanvasTap(e) {
@@ -1566,50 +1604,52 @@
             let canvasY = (clientY - rect.top) * scaleY - player.height / 2;
             player.targetX = Math.max(0, Math.min(canvas.width - player.width, canvasX));
             player.targetY = Math.max(0, Math.min(canvas.height - player.height, canvasY));
-            const fx = document.createElement('div');
-            fx.style.position = 'fixed';
-            fx.style.left = `${clientX - 20}px`;
-            fx.style.top = `${clientY - 20}px`;
-            fx.style.width = '40px';
-            fx.style.height = '40px';
-            fx.style.borderRadius = '50%';
-            fx.style.backgroundColor = 'rgba(255,255,255,0.6)';
-            fx.style.pointerEvents = 'none';
-            fx.style.transition = 'all 0.2s ease';
-            document.body.appendChild(fx);
-            setTimeout(() => { fx.style.transform = 'scale(2)'; fx.style.opacity = '0'; setTimeout(() => fx.remove(), 200); }, 10);
         }
 
         function updateMovement() {
+            if (!currentScene) return;
+
             let moving = false;
+            let moveX = 0, moveY = 0;
+
             if (player.targetX !== null && player.targetY !== null) {
                 const dx = player.targetX - player.x;
                 const dy = player.targetY - player.y;
                 const dist = Math.hypot(dx, dy);
                 if (dist < SPEED) {
-                    player.x = player.targetX; player.y = player.targetY; player.targetX = null; player.targetY = null;
+                    player.x = player.targetX;
+                    player.y = player.targetY;
+                    player.targetX = null;
+                    player.targetY = null;
                 } else {
-                    const angle = Math.atan2(dy, dx);
-                    player.x += Math.cos(angle) * SPEED;
-                    player.y += Math.sin(angle) * SPEED;
+                    moveX = Math.cos(Math.atan2(dy, dx)) * SPEED;
+                    moveY = Math.sin(Math.atan2(dy, dx)) * SPEED;
                     if (Math.abs(dx) > Math.abs(dy)) player.direction = dx > 0 ? 'right' : 'left';
                     else player.direction = dy > 0 ? 'down' : 'up';
+                    moving = true;
                 }
-                moving = true;
             } else {
-                let moveX = 0, moveY = 0;
                 if (keys['ArrowLeft'] || keys['a'] || touchDirections.left) moveX = -SPEED;
                 if (keys['ArrowRight'] || keys['d'] || touchDirections.right) moveX = SPEED;
                 if (keys['ArrowUp'] || keys['w'] || touchDirections.up) moveY = -SPEED;
                 if (keys['ArrowDown'] || keys['s'] || touchDirections.down) moveY = SPEED;
-                if (moveX !== 0 || moveY !== 0) {
-                    player.x += moveX; player.y += moveY; moving = true;
+                moving = (moveX !== 0 || moveY !== 0);
+                if (moving) {
                     if (moveX !== 0) player.direction = moveX > 0 ? 'right' : 'left';
                     else if (moveY !== 0) player.direction = moveY > 0 ? 'down' : 'up';
                 } else player.direction = 'static';
             }
-            player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
-            player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
+
+            if (moveX !== 0 || moveY !== 0) {
+                tryMove(moveX, moveY);
+            }
+
+            // Verifica transição de cena
+            const nextScene = currentScene.update(player);
+            if (nextScene) {
+                changeScene(nextScene);
+            }
+
             const now = Date.now();
             if (now - player.lastFrameUpdate > 1000 / 6) {
                 if (moving) player.frame = player.frame === 0 ? 1 : 0;
@@ -1620,11 +1660,15 @@
         }
 
         function drawGame() {
-            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, '#E0F2F1'); grad.addColorStop(1, '#B2DFDB');
-            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = '#80CBC4'; ctx.lineWidth = 0.5;
-            for (let i = 0; i < canvas.width; i += 40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
+            if (!currentScene) return;
+
+            // Desenha o fundo da cena atual
+            currentScene.drawBackground(ctx, canvas.width, canvas.height);
+
+            // Desenha os objetos da cena atual
+            currentScene.drawObjects(ctx);
+
+            // Desenha o personagem
             let currentImg, flip = false;
             const dir = player.direction;
             if (dir === 'left') currentImg = player.sprites[`left0${player.frame}`];
@@ -1638,6 +1682,7 @@
                 else { ctx.drawImage(currentImg, player.x, player.y, player.width, player.height); }
                 ctx.restore();
             }
+
             ctx.fillStyle = '#2C3E50'; ctx.font = 'bold 16px "Comic Sans MS", cursive'; ctx.fillText("🎮 Explore a Escola Ideal", 15, 30);
         }
 
@@ -1649,10 +1694,13 @@
 
         async function initGameWithCharacter(charId) {
             if (animFrameId) cancelAnimationFrame(animFrameId);
-            currentCharacterFolder = charId;
-            const loadedSprites = await loadSpritesForCharacter(currentCharacterFolder);
+            const loadedSprites = await loadSpritesForCharacter(charId);
             player.sprites = loadedSprites;
             player.x = 400; player.y = 300; player.targetX = null; player.targetY = null; player.frame = 0; player.direction = 'static';
+
+            // Inicializa a cena de entrada
+            changeScene('entrance');
+
             if (!gameInitialized) {
                 attachControls();
                 canvas.addEventListener('touchstart', handleCanvasTap);
@@ -1663,6 +1711,11 @@
         }
 
         startGameBtn.addEventListener('click', () => {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                showNameModal();
+                return;
+            }
             carouselScreen.classList.add('hide');
             setTimeout(() => {
                 carouselScreen.style.display = 'none';
@@ -1672,302 +1725,73 @@
             }, 400);
         });
 
-        // Assistente + Tema + Folhas
+        // Assistente, Toast, Tema
         let isAssistantVisible = false;
         const assistantContainer = document.getElementById('assistantContainer');
         const helpBtn = document.getElementById('helpEmojiBtn');
         const bubbleText = document.getElementById('bubbleText');
         const toast = document.getElementById('magicToast');
         const toastMsg = document.getElementById('toastMessage');
-
-        function showToast(message, duration = 3000) {
-            toastMsg.innerText = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), duration);
-        }
-
-        function toggleAssistant() {
-            isAssistantVisible = !isAssistantVisible;
-            if (isAssistantVisible) {
-                assistantContainer.classList.add('is-visible');
-                helpBtn.style.opacity = '0'; helpBtn.style.visibility = 'hidden';
-                bubbleText.innerText = "✨ Escolha seu personagem e clique em START! ✨";
-            } else {
-                assistantContainer.classList.remove('is-visible');
-                helpBtn.style.opacity = '1'; helpBtn.style.visibility = 'visible';
-                showToast("👋 Até logo!", 1500);
-            }
-        }
-
+        function showToast(message, duration = 3000) { toastMsg.innerText = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), duration); }
+        function toggleAssistant() { isAssistantVisible = !isAssistantVisible; if (isAssistantVisible) { assistantContainer.classList.add('is-visible'); helpBtn.style.opacity = '0'; helpBtn.style.visibility = 'hidden'; bubbleText.innerText = "✨ Escolha seu personagem e clique em START! ✨"; } else { assistantContainer.classList.remove('is-visible'); helpBtn.style.opacity = '1'; helpBtn.style.visibility = 'visible'; showToast("👋 Até logo!", 1500); } }
         helpBtn.addEventListener('click', toggleAssistant);
-        document.getElementById('assistantImage').addEventListener('click', () => {
-            bubbleText.innerText = "🎮 Divirta-se explorando a Escola Ideal!";
-            showToast("💬 " + bubbleText.innerText, 2000);
-        });
-
+        document.getElementById('assistantImage').addEventListener('click', () => { bubbleText.innerText = "🎮 Divirta-se explorando a Escola Ideal!"; showToast("💬 " + bubbleText.innerText, 2000); });
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            themeToggle.classList.toggle('fa-sun');
-            themeToggle.classList.toggle('fa-moon');
-            showToast(body.classList.contains('dark-mode') ? "🌙 Modo Noturno" : "☀️ Modo Diurno");
-        });
+        themeToggle.addEventListener('click', () => { body.classList.toggle('dark-mode'); themeToggle.classList.toggle('fa-sun'); themeToggle.classList.toggle('fa-moon'); showToast(body.classList.contains('dark-mode') ? "🌙 Modo Noturno" : "☀️ Modo Diurno"); });
+        for (let i = 0; i < 20; i++) { const leaf = document.createElement('div'); leaf.classList.add('leaf'); leaf.style.width = Math.random() * 20 + 15 + 'px'; leaf.style.height = leaf.style.width; leaf.style.left = Math.random() * 100 + '%'; leaf.style.animation = `fallLeaf${Math.floor(Math.random() * 3) + 1} ${Math.random() * 12 + 8}s linear infinite`; document.querySelector('.parallax-container').appendChild(leaf); }
 
-        for (let i = 0; i < 20; i++) {
-            const leaf = document.createElement('div');
-            leaf.classList.add('leaf');
-            leaf.style.width = Math.random() * 20 + 15 + 'px';
-            leaf.style.height = leaf.style.width;
-            leaf.style.left = Math.random() * 100 + '%';
-            leaf.style.animation = `fallLeaf${Math.floor(Math.random() * 3) + 1} ${Math.random() * 12 + 8}s linear infinite`;
-            document.querySelector('.parallax-container').appendChild(leaf);
-        }
-
-        // ============================================================
-        // CONTROLE DA TELA DE START
-        // ============================================================
+        // Controle da tela de start
         const startScreen = document.getElementById('startScreen');
         const startButton = document.getElementById('startButton');
-
-        // Inicialmente, garantir que o carrossel está escondido
         carouselScreen.style.display = 'flex';
         carouselScreen.classList.add('hide');
         carouselScreen.style.opacity = '0';
         carouselScreen.style.visibility = 'hidden';
         carouselScreen.style.pointerEvents = 'none';
-
-        // Evento do botão START
         startButton.addEventListener('click', () => {
-            // Esconde a tela de start com animação
             startScreen.classList.add('hide');
-
-            // Mostra o carrossel após 100ms
             setTimeout(() => {
                 carouselScreen.style.display = 'flex';
                 carouselScreen.classList.remove('hide');
                 carouselScreen.style.opacity = '1';
                 carouselScreen.style.visibility = 'visible';
                 carouselScreen.style.pointerEvents = 'auto';
-
                 showToast("✨ Escolha seu companheiro de jornada! ✨", 3000);
-
-                // Pequena animação extra no carrossel ao abrir
                 const carouselContainer = document.querySelector('.carousel-container');
                 carouselContainer.style.animation = 'none';
-                setTimeout(() => {
-                    carouselContainer.style.animation = 'slideInUp 0.6s cubic-bezier(0.34, 1.2, 0.64, 1)';
-                }, 10);
+                setTimeout(() => { carouselContainer.style.animation = 'slideInUp 0.6s cubic-bezier(0.34, 1.2, 0.64, 1)'; }, 10);
             }, 800);
         });
 
-        // ============================================================
-        // GERENCIADOR DE NOME E TECLADO
-        // ============================================================
+        // Nome e teclado
         let playerName = localStorage.getItem('playerName') || '';
-
-        // Função para criar teclado virtual (maiúsculo)
         function createVirtualKeyboard() {
             const keyboardContainer = document.getElementById('keyboardContainer');
             if (!keyboardContainer) return;
-
-            const keyboardLayout = [
-                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ç'],
-                ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
-                ['BACK', 'CLEAR', 'SPACE']
-            ];
-
+            const keyboardLayout = [['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'], ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ç'], ['Z', 'X', 'C', 'V', 'B', 'N', 'M'], ['BACK', 'CLEAR', 'SPACE']];
             keyboardContainer.innerHTML = '';
-
             keyboardLayout.forEach(row => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'keyboard-row';
-
+                const rowDiv = document.createElement('div'); rowDiv.className = 'keyboard-row';
                 row.forEach(key => {
-                    const button = document.createElement('button');
-                    button.className = 'keyboard-key';
-
-                    if (key === 'BACK') {
-                        button.innerHTML = '<i class="fas fa-backspace"></i>';
-                        button.classList.add('special');
-                        button.onclick = () => {
-                            const input = document.getElementById('playerNameInput');
-                            input.value = input.value.slice(0, -1);
-                        };
-                    }
-                    else if (key === 'CLEAR') {
-                        button.innerHTML = '<i class="fas fa-trash"></i>';
-                        button.classList.add('special');
-                        button.onclick = () => {
-                            document.getElementById('playerNameInput').value = '';
-                        };
-                    }
-                    else if (key === 'SPACE') {
-                        button.innerHTML = '␣';
-                        button.classList.add('special', 'space');
-                        button.onclick = () => {
-                            const input = document.getElementById('playerNameInput');
-                            input.value += ' ';
-                        };
-                    }
-                    else {
-                        button.textContent = key;
-                        button.onclick = () => {
-                            const input = document.getElementById('playerNameInput');
-                            input.value += key;
-                        };
-                    }
-
+                    const button = document.createElement('button'); button.className = 'keyboard-key';
+                    if (key === 'BACK') { button.innerHTML = '<i class="fas fa-backspace"></i>'; button.classList.add('special'); button.onclick = () => { const input = document.getElementById('playerNameInput'); input.value = input.value.slice(0, -1); }; }
+                    else if (key === 'CLEAR') { button.innerHTML = '<i class="fas fa-trash"></i>'; button.classList.add('special'); button.onclick = () => { document.getElementById('playerNameInput').value = ''; }; }
+                    else if (key === 'SPACE') { button.innerHTML = '␣'; button.classList.add('special', 'space'); button.onclick = () => { const input = document.getElementById('playerNameInput'); input.value += ' '; }; }
+                    else { button.textContent = key; button.onclick = () => { const input = document.getElementById('playerNameInput'); input.value += key; }; }
                     rowDiv.appendChild(button);
                 });
-
                 keyboardContainer.appendChild(rowDiv);
             });
         }
-
-        // Função para mostrar o modal de nome
-        function showNameModal() {
-            const modal = document.getElementById('nameModal');
-            const input = document.getElementById('playerNameInput');
-
-            if (!modal) return;
-
-            input.value = playerName || '';
-            modal.style.display = 'flex';
-            input.focus();
-        }
-
-        // Função para esconder o modal de nome
-        function hideNameModal() {
-            const modal = document.getElementById('nameModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
-
-        // Função para atualizar o nome na interface
-        function updateUserNameDisplay() {
-            const nameDisplay = document.getElementById('userNameDisplay');
-            if (nameDisplay) {
-                const displayName = playerName ? playerName.toUpperCase() : 'VISITANTE';
-                nameDisplay.textContent = displayName;
-            }
-        }
-
-        // Função para atualizar a imagem do avatar
-        function updateUserAvatar(characterId) {
-            const avatarContainer = document.getElementById('userAvatar');
-            if (!avatarContainer) return;
-
-            const character = personagens.find(c => c.id === characterId);
-            const avatarImg = avatarContainer.querySelector('img');
-
-            if (character) {
-                const imgPath = `./src/img/${character.folder}/static.png`;
-                const img = new Image();
-                img.onload = () => {
-                    if (avatarImg) {
-                        avatarImg.src = imgPath;
-                    } else {
-                        avatarContainer.innerHTML = `<img src="${imgPath}" alt="Avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">`;
-                    }
-                };
-                img.onerror = () => {
-                    avatarContainer.innerHTML = `<i class="fas fa-user"></i>`;
-                };
-                img.src = imgPath;
-            }
-        }
-
-        // Evento de confirmar nome
-        function setupNameModalEvents() {
-            const confirmBtn = document.getElementById('confirmNameBtn');
-            const input = document.getElementById('playerNameInput');
-
-            if (confirmBtn) {
-                confirmBtn.onclick = () => {
-                    const newName = input.value.trim();
-                    if (newName) {
-                        playerName = newName.toUpperCase();
-                        localStorage.setItem('playerName', playerName);
-                        updateUserNameDisplay();
-                        hideNameModal();
-                        showToast(`✨ Olá, ${playerName}! Bem-vindo(a) à jornada! ✨`, 2000);
-                    } else {
-                        showToast('⚠️ Por favor, digite seu nome! ⚠️', 1500);
-                    }
-                };
-            }
-
-            if (input) {
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        confirmBtn.click();
-                    }
-                });
-            }
-        }
-
-        // Modificar a função de seleção de personagem para atualizar o avatar
-        const originalIrPara = irPara;
-        window.irPara = function (index) {
-            originalIrPara(index);
-            if (selectedCharacterId) {
-                updateUserAvatar(selectedCharacterId);
-            }
-        };
-
-        // Modificar o evento de início do jogo
-        const originalStartGame = startGameBtn.onclick;
-        startGameBtn.onclick = () => {
-            if (!playerName) {
-                showNameModal();
-                return;
-            }
-            if (originalStartGame) originalStartGame();
-        };
-
-        // Inicializar nome e avatar quando o personagem for selecionado
-        function initializeUserData() {
-            if (playerName) {
-                updateUserNameDisplay();
-            }
-            if (selectedCharacterId) {
-                updateUserAvatar(selectedCharacterId);
-            }
-        }
-
-        // Adicionar evento ao botão de perfil para editar nome
-        document.addEventListener('DOMContentLoaded', () => {
-            const avatar = document.getElementById('userAvatar');
-            if (avatar) {
-                avatar.style.cursor = 'pointer';
-                avatar.onclick = () => {
-                    showNameModal();
-                };
-            }
-        });
-
-        // Inicializar tudo
-        createVirtualKeyboard();
-        setupNameModalEvents();
-        initializeUserData();
-
-        // Mostrar modal se não tiver nome ao abrir o carrossel
-        const originalCarrosselShow = startButton.onclick;
-        startButton.onclick = () => {
-            if (originalCarrosselShow) originalCarrosselShow();
-            setTimeout(() => {
-                if (!playerName) {
-                    setTimeout(() => {
-                        showNameModal();
-                    }, 1000);
-                }
-            }, 500);
-        };
+        function showNameModal() { const modal = document.getElementById('nameModal'); if (modal) { document.getElementById('playerNameInput').value = playerName || ''; modal.style.display = 'flex'; } }
+        function hideNameModal() { const modal = document.getElementById('nameModal'); if (modal) modal.style.display = 'none'; }
+        function updateUserNameDisplay() { const nameDisplay = document.getElementById('userNameDisplay'); if (nameDisplay) nameDisplay.textContent = playerName ? playerName.toUpperCase() : 'VISITANTE'; }
+        function setupNameModalEvents() { const confirmBtn = document.getElementById('confirmNameBtn'); const input = document.getElementById('playerNameInput'); if (confirmBtn) confirmBtn.onclick = () => { const newName = input.value.trim(); if (newName) { playerName = newName.toUpperCase(); localStorage.setItem('playerName', playerName); updateUserNameDisplay(); hideNameModal(); showToast(`✨ Olá, ${playerName}! Bem-vindo(a) à jornada! ✨`, 2000); } else showToast('⚠️ Por favor, digite seu nome! ⚠️', 1500); }; if (input) input.addEventListener('keypress', (e) => { if (e.key === 'Enter') confirmBtn.click(); }); }
+        function updateUserAvatar(characterId) { const avatarContainer = document.getElementById('userAvatar'); if (!avatarContainer) return; const character = personagens.find(c => c.id === characterId); if (character) { const imgPath = `./src/img/characters/${character.folder}/static.png`; const img = new Image(); img.onload = () => avatarContainer.innerHTML = `<img src="${imgPath}" alt="Avatar" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">`; img.onerror = () => avatarContainer.innerHTML = `<i class="fas fa-user"></i>`; img.src = imgPath; } }
+        createVirtualKeyboard(); setupNameModalEvents(); updateUserNameDisplay(); updateUserAvatar(selectedCharacterId);
+        document.addEventListener('DOMContentLoaded', () => { const avatar = document.getElementById('userAvatar'); if (avatar) { avatar.style.cursor = 'pointer'; avatar.onclick = () => showNameModal(); } });
     </script>
-
 </body>
 
 </html>

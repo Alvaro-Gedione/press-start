@@ -1,9 +1,9 @@
 # Paths for Meet360 project
 $projects = @(
     @{ 
-        Origem   = "E:\Softwares\Livreto"; 
+        Origem   = "E:\Softwares\press-start"; 
         Destino  = "C:\Users\Alvaro\Downloads\txt_combinados\txt_geral"; 
-        Final    = "C:\Users\Alvaro\Downloads\txt_combinados\tudo_combinado_Livreto.txt";
+        Final    = "C:\Users\Alvaro\Downloads\txt_combinados\tudo_combinado_PressStart.txt";
         Filtro   = "*";
         excessao = "tudo_combinado" # Pasta a ser excluída
     }

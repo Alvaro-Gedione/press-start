@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Objetos - Cenário de Entrada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .canvas-area {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .canvas-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: crosshair;
+            background: #e8e8e8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+
+        .controls-panel {
+            width: 350px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .size-control {
+            display: flex;
+            gap: 10px;
+        }
+
+        .size-control input {
+            flex: 1;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        button.danger {
+            background: #e74c3c;
+        }
+
+        button.danger:hover {
+            background: #c0392b;
+        }
+
+        button.success {
+            background: #27ae60;
+        }
+
+        button.success:hover {
+            background: #229954;
+        }
+
+        button.secondary {
+            background: #95a5a6;
+        }
+
+        button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .object-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .object-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid #667eea;
+        }
+
+        .object-item:hover {
+            background: #e9ecef;
+            transform: translateX(3px);
+        }
+
+        .object-item.selected {
+            background: #e0e7ff;
+            border-left-color: #5a67d8;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .object-info {
+            flex: 1;
+        }
+
+        .object-name {
+            font-weight: bold;
+            font-size: 13px;
+            color: #2c3e50;
+        }
+
+        .object-coords {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 3px;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            width: auto;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .code-output {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .coord-preview {
+            background: #ecf0f1;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .shortcuts {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .shortcuts kbd {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .transparency-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .transparency-control input {
+            flex: 1;
+        }
+
+        .transparency-control span {
+            font-size: 12px;
+            color: #666;
+            min-width: 45px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Editor de Objetos do Cenário</h1>
+            <p>🔧 Adicione uma imagem de fundo como referência | CTRL+Arrastar para criar objetos</p>
+        </div>
+
+        <div class="main-content">
+            <div class="canvas-area">
+                <div class="canvas-container">
+                    <canvas id="sceneCanvas" width="800" height="600"></canvas>
+                </div>
+                <div class="coord-preview" id="coordPreview">
+                    🖱️ Pressione CTRL + Arrastar: Criar objeto | Clique para selecionar | Arraste para
+                    mover/redimensionar
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="section">
+                    <div class="section-title">
+                        <span>🖼️</span>
+                        <span>Imagem de Fundo</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Carregar imagem de referência:</label>
+                        <div class="file-input-wrapper">
+                            <button class="secondary" style="margin-bottom: 5px;">📁 Selecionar Imagem</button>
+                            <input type="file" id="backgroundImageInput" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ou URL da imagem:</label>
+                        <input type="text" id="backgroundUrl" placeholder="https://exemplo.com/imagem.jpg">
+                        <button id="loadUrlBtn" style="margin-top: 5px;">🌐 Carregar URL</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Transparência:</label>
+                        <div class="transparency-control">
+                            <input type="range" id="bgOpacity" min="0" max="100" value="100">
+                            <span id="opacityValue">100%</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ajuste:</label>
+                        <select id="bgFit">
+                            <option value="cover">Cobrir (Cover)</option>
+                            <option value="contain">Conter (Contain)</option>
+                            <option value="stretch">Esticar (Stretch)</option>
+                            <option value="original">Tamanho Original</option>
+                        </select>
+                    </div>
+                    <div id="imagePreview" class="image-preview"></div>
+                    <button id="removeBgBtn" class="danger" style="margin-top: 10px;">🗑️ Remover Fundo</button>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span>📐</span>
+                        <span>Modo de Edição</span>
+                    </div>
+                    <div class="shortcuts">
+                        💡 Dicas:<br>
+                        • <kbd>CTRL</kbd> + Arrastar = Criar novo objeto<br>
+                        • <kbd>Delete</kbd> = Remover objeto selecionado<br>
+                        • <kbd>ESC</kbd> = Cancelar operação<br>
+                        • Imagem de fundo NÃO é exportada (apenas referência)
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span>➕</span>
+                        <span>Adicionar Novo Objeto</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome do objeto:</label>
+                        <input type="text" id="objectName" placeholder="ex: roda_interativa, botao_magico"
+                            value="novo_objeto">
+                    </div>
+                    <div class="form-group">
+                        <label>Tamanho padrão:</label>
+                        <div class="size-control">
+                            <input type="number" id="defaultWidth" placeholder="Largura" value="60" step="5">
+                            <input type="number" id="defaultHeight" placeholder="Altura" value="60" step="5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo:</label>
+                        <select id="objectType">
+                            <option value="interactive">Interativo</option>
+                            <option value="solid">Sólido (Parede)</option>
+                            <option value="pushable">Empurrável</option>
+                        </select>
+                    </div>
+                    <button id="addFixedBtn">📍 Adicionar no Centro</button>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span>📋</span>
+                        <span>Objetos do Cenário</span>
+                        <button id="clearAllBtn" class="delete-btn" style="width: auto; margin-left: auto;">Limpar
+                            Todos</button>
+                    </div>
+                    <div id="objectList" class="object-list">
+                        <!-- Lista de objetos será inserida aqui -->
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span>💾</span>
+                        <span>Código Gerado</span>
+                    </div>
+                    <div class="code-output" id="codeOutput">
+                        // Clique no canvas para gerar objetos
+                    </div>
+                    <button id="copyCodeBtn" class="success" style="margin-top: 10px;">📋 Copiar Código</button>
+                    <button id="exportJsonBtn" style="margin-top: 5px; background: #3498db;">💾 Exportar como
+                        JSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('sceneCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Array para armazenar objetos adicionados pelo usuário
+        let userObjects = [];
+
+        // Estado de seleção e interação
+        let selectedObjectIndex = -1;
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0;
+        let originalX = 0, originalY = 0;
+        let originalWidth = 0, originalHeight = 0;
+        let resizeCorner = null;
+
+        // Estado de criação de objeto
+        let isCreating = false;
+        let createStartX = 0, createStartY = 0;
+
+        // Imagem de fundo
+        let backgroundImage = new Image();
+        let hasBackgroundImage = false;
+        let bgImageElement = null;
+
+        // Configurações da imagem de fundo
+        let bgOpacity = 100;
+        let bgFit = 'cover';
+
+        // Desenhar o cenário base
+        function drawBackground() {
+            if (hasBackgroundImage && bgImageElement && bgImageElement.complete && bgImageElement.naturalWidth > 0) {
+                ctx.save();
+                ctx.globalAlpha = bgOpacity / 100;
+
+                const imgWidth = bgImageElement.naturalWidth;
+                const imgHeight = bgImageElement.naturalHeight;
+                let drawWidth, drawHeight, drawX, drawY;
+
+                switch (bgFit) {
+                    case 'cover':
+                        const scaleCover = Math.max(canvas.width / imgWidth, canvas.height / imgHeight);
+                        drawWidth = imgWidth * scaleCover;
+                        drawHeight = imgHeight * scaleCover;
+                        drawX = (canvas.width - drawWidth) / 2;
+                        drawY = (canvas.height - drawHeight) / 2;
+                        break;
+                    case 'contain':
+                        const scaleContain = Math.min(canvas.width / imgWidth, canvas.height / imgHeight);
+                        drawWidth = imgWidth * scaleContain;
+                        drawHeight = imgHeight * scaleContain;
+                        drawX = (canvas.width - drawWidth) / 2;
+                        drawY = (canvas.height - drawHeight) / 2;
+                        break;
+                    case 'stretch':
+                        drawWidth = canvas.width;
+                        drawHeight = canvas.height;
+                        drawX = 0;
+                        drawY = 0;
+                        break;
+                    case 'original':
+                        drawWidth = imgWidth;
+                        drawHeight = imgHeight;
+                        drawX = (canvas.width - drawWidth) / 2;
+                        drawY = (canvas.height - drawHeight) / 2;
+                        break;
+                    default:
+                        drawWidth = canvas.width;
+                        drawHeight = canvas.height;
+                        drawX = 0;
+                        drawY = 0;
+                }
+
+                ctx.drawImage(bgImageElement, drawX, drawY, drawWidth, drawHeight);
+                ctx.restore();
+
+                // Desenhar grid sobre a imagem (opcional)
+                ctx.save();
+                ctx.globalAlpha = 0.2;
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < canvas.width; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            } else {
+                // Gradiente padrão
+                const grad = ctx.createLinearGradient(0, 0, 0, 600);
+                grad.addColorStop(0, '#87CEEB');
+                grad.addColorStop(1, '#98FB98');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 800, 600);
+
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 800; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, 600);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(800, i);
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = '#5C4033';
+                ctx.font = 'bold 20px sans-serif';
+                ctx.fillText("🏫 Editor de Cenário", 300, 40);
+                ctx.font = '14px sans-serif';
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillText("Adicione uma imagem de fundo como referência", 280, 80);
+            }
+        }
+
+        // Desenhar controles de redimensionamento
+        function drawResizeHandles(obj) {
+            const handleSize = 8;
+            const handles = [
+                { x: obj.x - handleSize / 2, y: obj.y - handleSize / 2, corner: 'tl' },
+                { x: obj.x + obj.width - handleSize / 2, y: obj.y - handleSize / 2, corner: 'tr' },
+                { x: obj.x - handleSize / 2, y: obj.y + obj.height - handleSize / 2, corner: 'bl' },
+                { x: obj.x + obj.width - handleSize / 2, y: obj.y + obj.height - handleSize / 2, corner: 'br' }
+            ];
+
+            ctx.fillStyle = '#FFD700';
+            ctx.shadowBlur = 3;
+            handles.forEach(handle => {
+                ctx.fillRect(handle.x, handle.y, handleSize, handleSize);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(handle.x, handle.y, handleSize, handleSize);
+            });
+            ctx.shadowBlur = 0;
+        }
+
+        // Desenhar todos os objetos
+        function drawAllObjects() {
+            userObjects.forEach((obj, index) => {
+                if (index === selectedObjectIndex) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#FFD700';
+                }
+
+                if (obj.type === 'interactive') {
+                    drawInteractiveObject(obj, index === selectedObjectIndex);
+                } else if (obj.type === 'solid') {
+                    drawSolidObject(obj, index === selectedObjectIndex);
+                } else if (obj.type === 'pushable') {
+                    drawPushableObject(obj, index === selectedObjectIndex);
+                }
+
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.font = '10px monospace';
+                ctx.fillText(`${obj.x},${obj.y} | ${obj.width}x${obj.height}`, obj.x + 5, obj.y - 5);
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.fillText(obj.name, obj.x + 5, obj.y - 18);
+            });
+
+            // Desenhar retângulo de criação
+            if (isCreating) {
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.strokeRect(createStartX, createStartY, dragStartX - createStartX, dragStartY - createStartY);
+                ctx.setLineDash([]);
+            }
+        }
+
+        function drawInteractiveObject(obj, isSelected) {
+            ctx.fillStyle = 'rgba(0, 206, 209, 0.3)';
+            ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+            ctx.fillStyle = isSelected ? '#FFD700' : '#00CED1';
+            ctx.fillRect(obj.x + 3, obj.y + 3, obj.width - 6, obj.height - 6);
+            ctx.strokeStyle = '#008B8B';
+            ctx.lineWidth = isSelected ? 3 : 2;
+            ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
+
+            ctx.font = `${Math.min(obj.height, obj.width) * 0.5}px sans-serif`;
+            ctx.fillStyle = '#FFD700';
+            ctx.fillText("⚙️", obj.x + obj.width / 2 - 15, obj.y + obj.height / 2 + 8);
+
+            if (isSelected) {
+                drawResizeHandles(obj);
+            }
+        }
+
+        function drawSolidObject(obj, isSelected) {
+            ctx.fillStyle = 'rgba(139, 69, 19, 0.85)';
+            ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+            ctx.strokeStyle = isSelected ? '#FFD700' : '#8B4513';
+            ctx.lineWidth = isSelected ? 3 : 2;
+            ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
+
+            ctx.fillStyle = '#A0522D';
+            ctx.fillRect(obj.x + 5, obj.y + 5, obj.width - 10, 8);
+            ctx.fillRect(obj.x + 5, obj.y + obj.height - 13, obj.width - 10, 8);
+
+            if (isSelected) {
+                drawResizeHandles(obj);
+            }
+        }
+
+        function drawPushableObject(obj, isSelected) {
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.fillRect(obj.x + 3, obj.y + 3, obj.width, obj.height);
+            ctx.fillStyle = isSelected ? '#FFD700' : '#CD853F';
+            ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = isSelected ? 3 : 2;
+            ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
+
+            ctx.fillStyle = '#DAA520';
+            ctx.fillRect(obj.x + 8, obj.y + 15, obj.width - 16, 6);
+            ctx.fillRect(obj.x + 8, obj.y + obj.height - 21, obj.width - 16, 6);
+
+            ctx.font = `${Math.min(obj.height, obj.width) * 0.5}px sans-serif`;
+            ctx.fillStyle = '#8B4513';
+            ctx.fillText("📦", obj.x + obj.width / 2 - 12, obj.y + obj.height / 2 + 8);
+
+            if (isSelected) {
+                drawResizeHandles(obj);
+            }
+        }
+
+        // Verificar em qual canto do objeto o mouse está
+        function getResizeCorner(obj, mouseX, mouseY) {
+            const handleSize = 8;
+            const corners = {
+                tl: { x: obj.x - handleSize / 2, y: obj.y - handleSize / 2 },
+                tr: { x: obj.x + obj.width - handleSize / 2, y: obj.y - handleSize / 2 },
+                bl: { x: obj.x - handleSize / 2, y: obj.y + obj.height - handleSize / 2 },
+                br: { x: obj.x + obj.width - handleSize / 2, y: obj.y + obj.height - handleSize / 2 }
+            };
+
+            for (let [corner, pos] of Object.entries(corners)) {
+                if (mouseX >= pos.x && mouseX <= pos.x + handleSize &&
+                    mouseY >= pos.y && mouseY <= pos.y + handleSize) {
+                    return corner;
+                }
+            }
+            return null;
+        }
+
+        // Verificar se clicou em algum objeto
+        function getObjectAtPosition(x, y) {
+            for (let i = userObjects.length - 1; i >= 0; i--) {
+                const obj = userObjects[i];
+                if (x >= obj.x && x <= obj.x + obj.width && y >= obj.y && y <= obj.y + obj.height) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // Renderizar tudo
+        function render() {
+            drawBackground();
+            drawAllObjects();
+        }
+
+        // Adicionar objeto com dimensões especificadas
+        function addObjectWithSize(x, y, width, height) {
+            const name = document.getElementById('objectName').value.trim();
+            if (!name) {
+                alert('Por favor, digite um nome para o objeto!');
+                return false;
+            }
+
+            const type = document.getElementById('objectType').value;
+
+            if (x + width > 800) width = 800 - x;
+            if (y + height > 600) height = 600 - y;
+            if (width < 10 || height < 10) return false;
+
+            const newObject = {
+                x: Math.max(0, x),
+                y: Math.max(0, y),
+                width: width,
+                height: height,
+                type: type,
+                name: name
+            };
+
+            userObjects.push(newObject);
+            selectedObjectIndex = userObjects.length - 1;
+            updateObjectList();
+            generateCode();
+            render();
+            return true;
+        }
+
+        // Atualizar objeto existente
+        function updateObjectPosition(index, newX, newY) {
+            if (newX < 0) newX = 0;
+            if (newY < 0) newY = 0;
+            if (newX + userObjects[index].width > 800) newX = 800 - userObjects[index].width;
+            if (newY + userObjects[index].height > 600) newY = 600 - userObjects[index].height;
+
+            userObjects[index].x = newX;
+            userObjects[index].y = newY;
+            updateObjectList();
+            generateCode();
+            render();
+        }
+
+        function updateObjectSize(index, newWidth, newHeight, keepPosition = true) {
+            let newX = userObjects[index].x;
+            let newY = userObjects[index].y;
+
+            if (!keepPosition) {
+                if (resizeCorner === 'tl') {
+                    newX = userObjects[index].x + userObjects[index].width - newWidth;
+                    newY = userObjects[index].y + userObjects[index].height - newHeight;
+                } else if (resizeCorner === 'tr') {
+                    newY = userObjects[index].y + userObjects[index].height - newHeight;
+                } else if (resizeCorner === 'bl') {
+                    newX = userObjects[index].x + userObjects[index].width - newWidth;
+                }
+            }
+
+            if (newX < 0) {
+                newWidth += newX;
+                newX = 0;
+            }
+            if (newY < 0) {
+                newHeight += newY;
+                newY = 0;
+            }
+            if (newX + newWidth > 800) newWidth = 800 - newX;
+            if (newY + newHeight > 600) newHeight = 600 - newY;
+
+            if (newWidth >= 10 && newHeight >= 10) {
+                userObjects[index].x = newX;
+                userObjects[index].y = newY;
+                userObjects[index].width = newWidth;
+                userObjects[index].height = newHeight;
+                updateObjectList();
+                generateCode();
+                render();
+            }
+        }
+
+        // Carregar imagem de fundo
+        function loadBackgroundImage(source) {
+            const img = new Image();
+            img.onload = function () {
+                bgImageElement = img;
+                hasBackgroundImage = true;
+                render();
+                updateImagePreview(source);
+            };
+            img.onerror = function () {
+                alert('Erro ao carregar a imagem. Verifique o URL ou arquivo.');
+            };
+            img.src = source;
+        }
+
+        function updateImagePreview(source) {
+            const previewDiv = document.getElementById('imagePreview');
+            previewDiv.innerHTML = `
+                <img src="${source}" alt="Preview">
+                <div style="font-size: 11px; color: #666; margin-top: 5px;">Imagem carregada com sucesso!</div>
+            `;
+        }
+
+        function removeBackground() {
+            hasBackgroundImage = false;
+            bgImageElement = null;
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('backgroundUrl').value = '';
+            document.getElementById('backgroundImageInput').value = '';
+            render();
+        }
+
+        // Atualizar lista de objetos na UI
+        function updateObjectList() {
+            const listDiv = document.getElementById('objectList');
+            if (userObjects.length === 0) {
+                listDiv.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">Nenhum objeto adicionado</div>';
+                return;
+            }
+
+            listDiv.innerHTML = userObjects.map((obj, index) => `
+                <div class="object-item ${index === selectedObjectIndex ? 'selected' : ''}" onclick="selectObject(${index})">
+                    <div class="object-info">
+                        <div class="object-name">${obj.name}</div>
+                        <div class="object-coords">(${obj.x}, ${obj.y}) | ${obj.width}x${obj.height} | ${obj.type}</div>
+                    </div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteObject(${index})">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        // Selecionar objeto
+        window.selectObject = function (index) {
+            selectedObjectIndex = index;
+            updateObjectList();
+            render();
+        };
+
+        // Deletar objeto
+        window.deleteObject = function (index) {
+            userObjects.splice(index, 1);
+            if (selectedObjectIndex >= userObjects.length) {
+                selectedObjectIndex = -1;
+            }
+            updateObjectList();
+            generateCode();
+            render();
+        };
+
+        // Limpar todos os objetos
+        document.getElementById('clearAllBtn').addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja remover todos os objetos?')) {
+                userObjects = [];
+                selectedObjectIndex = -1;
+                updateObjectList();
+                generateCode();
+                render();
+            }
+        });
+
+        // Gerar código
+        function generateCode() {
+            if (userObjects.length === 0) {
+                document.getElementById('codeOutput').innerHTML = '// Nenhum objeto para exportar';
+                return;
+            }
+
+            const codeString = userObjects.map(obj => {
+                return `{ x: ${obj.x}, y: ${obj.y}, width: ${obj.width}, height: ${obj.height}, type: '${obj.type}', name: '${obj.name}' }`;
+            }).join(',\n        ');
+
+            const fullCode = `const sceneObjects = [\n        ${codeString}\n    ];`;
+            document.getElementById('codeOutput').innerHTML = fullCode;
+        }
+
+        // Copiar código
+        document.getElementById('copyCodeBtn').addEventListener('click', () => {
+            const code = document.getElementById('codeOutput').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ Código copiado para a área de transferência!');
+            });
+        });
+
+        // Exportar JSON
+        document.getElementById('exportJsonBtn').addEventListener('click', () => {
+            const dataStr = JSON.stringify(userObjects, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', 'scene_objects.json');
+            linkElement.click();
+        });
+
+        // Adicionar no centro
+        document.getElementById('addFixedBtn').addEventListener('click', () => {
+            const width = parseInt(document.getElementById('defaultWidth').value);
+            const height = parseInt(document.getElementById('defaultHeight').value);
+            const x = (800 - width) / 2;
+            const y = (600 - height) / 2;
+            addObjectWithSize(x, y, width, height);
+        });
+
+        // Controles de imagem de fundo
+        document.getElementById('backgroundImageInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    loadBackgroundImage(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('loadUrlBtn').addEventListener('click', () => {
+            const url = document.getElementById('backgroundUrl').value.trim();
+            if (url) {
+                loadBackgroundImage(url);
+            } else {
+                alert('Digite uma URL válida!');
+            }
+        });
+
+        document.getElementById('removeBgBtn').addEventListener('click', () => {
+            removeBackground();
+        });
+
+        document.getElementById('bgOpacity').addEventListener('input', (e) => {
+            bgOpacity = e.target.value;
+            document.getElementById('opacityValue').textContent = bgOpacity + '%';
+            render();
+        });
+
+        document.getElementById('bgFit').addEventListener('change', (e) => {
+            bgFit = e.target.value;
+            render();
+        });
+
+        // Eventos do mouse
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const mouseX = (e.clientX - rect.left) * scaleX;
+            const mouseY = (e.clientY - rect.top) * scaleY;
+
+            // CTRL pressionado = modo criação
+            if (e.ctrlKey) {
+                isCreating = true;
+                createStartX = mouseX;
+                createStartY = mouseY;
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                canvas.style.cursor = 'crosshair';
+                e.preventDefault();
+                return;
+            }
+
+            // Verificar se clicou em algum objeto
+            const objectIndex = getObjectAtPosition(mouseX, mouseY);
+
+            if (objectIndex !== -1) {
+                selectedObjectIndex = objectIndex;
+                updateObjectList();
+
+                // Verificar se clicou em um canto de redimensionamento
+                resizeCorner = getResizeCorner(userObjects[selectedObjectIndex], mouseX, mouseY);
+
+                if (resizeCorner) {
+                    isDragging = true;
+                    originalWidth = userObjects[selectedObjectIndex].width;
+                    originalHeight = userObjects[selectedObjectIndex].height;
+                    originalX = userObjects[selectedObjectIndex].x;
+                    originalY = userObjects[selectedObjectIndex].y;
+                    dragStartX = mouseX;
+                    dragStartY = mouseY;
+                    canvas.style.cursor = 'nw-resize';
+                } else {
+                    isDragging = true;
+                    originalX = userObjects[selectedObjectIndex].x;
+                    originalY = userObjects[selectedObjectIndex].y;
+                    dragStartX = mouseX;
+                    dragStartY = mouseY;
+                    canvas.style.cursor = 'move';
+                }
+            } else {
+                selectedObjectIndex = -1;
+                updateObjectList();
+                render();
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const mouseX = (e.clientX - rect.left) * scaleX;
+            const mouseY = (e.clientY - rect.top) * scaleY;
+
+            // Atualizar preview de coordenadas
+            document.getElementById('coordPreview').innerHTML = `🖱️ Posição: (${Math.floor(mouseX)}, ${Math.floor(mouseY)}) | ${e.ctrlKey ? 'Criando objeto...' : (selectedObjectIndex !== -1 ? 'Selecionado: ' + userObjects[selectedObjectIndex]?.name : 'Clique para selecionar')}`;
+
+            // Criando novo objeto
+            if (isCreating) {
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                render();
+                return;
+            }
+
+            // Movendo ou redimensionando objeto existente
+            if (isDragging && selectedObjectIndex !== -1) {
+                const deltaX = mouseX - dragStartX;
+                const deltaY = mouseY - dragStartY;
+
+                if (resizeCorner) {
+                    let newWidth = originalWidth;
+                    let newHeight = originalHeight;
+
+                    if (resizeCorner === 'tl') {
+                        newWidth = originalWidth - deltaX;
+                        newHeight = originalHeight - deltaY;
+                        updateObjectSize(selectedObjectIndex, newWidth, newHeight, false);
+                    } else if (resizeCorner === 'tr') {
+                        newWidth = originalWidth + deltaX;
+                        newHeight = originalHeight - deltaY;
+                        updateObjectSize(selectedObjectIndex, newWidth, newHeight, false);
+                    } else if (resizeCorner === 'bl') {
+                        newWidth = originalWidth - deltaX;
+                        newHeight = originalHeight + deltaY;
+                        updateObjectSize(selectedObjectIndex, newWidth, newHeight, false);
+                    } else if (resizeCorner === 'br') {
+                        newWidth = originalWidth + deltaX;
+                        newHeight = originalHeight + deltaY;
+                        updateObjectSize(selectedObjectIndex, newWidth, newHeight, false);
+                    }
+                } else {
+                    updateObjectPosition(selectedObjectIndex, originalX + deltaX, originalY + deltaY);
+                }
+                render();
+            } else {
+                // Mudar cursor baseado no que está abaixo
+                const objectIndex = getObjectAtPosition(mouseX, mouseY);
+                if (objectIndex !== -1) {
+                    const corner = getResizeCorner(userObjects[objectIndex], mouseX, mouseY);
+                    if (corner) {
+                        canvas.style.cursor = 'nw-resize';
+                    } else {
+                        canvas.style.cursor = 'move';
+                    }
+                } else {
+                    canvas.style.cursor = 'crosshair';
+                }
+            }
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (isCreating) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const mouseX = (e.clientX - rect.left) * scaleX;
+                const mouseY = (e.clientY - rect.top) * scaleY;
+
+                const width = Math.abs(mouseX - createStartX);
+                const height = Math.abs(mouseY - createStartY);
+                const x = Math.min(createStartX, mouseX);
+                const y = Math.min(createStartY, mouseY);
+
+                if (width > 5 && height > 5) {
+                    addObjectWithSize(x, y, width, height);
+                }
+
+                isCreating = false;
+                render();
+            }
+
+            isDragging = false;
+            resizeCorner = null;
+            canvas.style.cursor = 'crosshair';
+        });
+
+        // Teclas de atalho
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' && selectedObjectIndex !== -1) {
+                deleteObject(selectedObjectIndex);
+            } else if (e.key === 'Escape') {
+                isCreating = false;
+                isDragging = false;
+                resizeCorner = null;
+                render();
+            }
+        });
+
+        // Renderização inicial
+        render();
+    </script>
+</body>
+
+</html>
