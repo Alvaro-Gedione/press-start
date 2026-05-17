@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Press Start - Escola Ideal | História</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* VARIÁVEIS DE TEMA */
+        :root {
+            --bg-sky: #d4f6ff;
+            --brightness-assets: 1;
+            --book-bg: rgba(255, 255, 255, 0.92);
+            --book-text: #374151;
+            --book-border: #FF69B4;
+            --book-shadow: #FFB6C1;
+        }
+
+        body.dark-mode {
+            --bg-sky: #1a233a;
+            --brightness-assets: 0.6;
+            --book-bg: rgba(42, 42, 58, 0.92);
+            --book-text: #e0e0e0;
+            --book-border: #8E7AB5;
+            --book-shadow: #11111b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Baloo 2', cursive;
+        }
+
+        body {
+            background-color: var(--bg-sky);
+            transition: background-color 0.8s ease;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* BACKGROUND PARALLAX (IGUAL AO GAME.HTML) */
+        .parallax-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background-image: url('../../img/background/cloud.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.7;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            animation: floatCloud linear infinite;
+        }
+
+        @keyframes floatCloud {
+            0% {
+                transform: translateX(-100px);
+            }
+
+            100% {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+
+        .cloud-1 {
+            top: 5%;
+            left: -150px;
+            width: 180px;
+            height: 100px;
+            animation-duration: 35s;
+        }
+
+        .cloud-2 {
+            top: 15%;
+            left: -200px;
+            width: 250px;
+            height: 140px;
+            animation-duration: 45s;
+            animation-delay: -10s;
+        }
+
+        .cloud-3 {
+            top: 25%;
+            left: -120px;
+            width: 160px;
+            height: 90px;
+            animation-duration: 30s;
+            animation-delay: -20s;
+        }
+
+        .cloud-4 {
+            top: 8%;
+            left: -300px;
+            width: 220px;
+            height: 120px;
+            animation-duration: 50s;
+            animation-delay: -5s;
+        }
+
+        .cloud-5 {
+            top: 20%;
+            left: -180px;
+            width: 140px;
+            height: 80px;
+            animation-duration: 38s;
+            animation-delay: -15s;
+        }
+
+        .layer-school {
+            position: absolute;
+            bottom: 25%;
+            left: 2%;
+            width: 300px;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            z-index: 1;
+        }
+
+        .layer-tree-1 {
+            position: absolute;
+            bottom: 25%;
+            right: 15%;
+            width: 90px;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            z-index: 1;
+        }
+
+        .layer-tree-2 {
+            position: absolute;
+            bottom: 28%;
+            right: 8%;
+            width: 70px;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            z-index: 1;
+        }
+
+        .layer-ground-back {
+            position: absolute;
+            bottom: 30%;
+            left: 0;
+            width: 100%;
+            height: 35vh;
+            background-image: url('../../img/background/ground02.png');
+            background-size: cover;
+            background-position: top center;
+            background-repeat: repeat-x;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            z-index: 0;
+        }
+
+        .layer-ground-mid {
+            position: absolute;
+            bottom: 10%;
+            left: 0;
+            width: 100%;
+            height: 30vh;
+            background-image: url('../../img/background/ground02.png');
+            background-size: cover;
+            background-position: top center;
+            background-repeat: repeat-x;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            z-index: 2;
+            opacity: 0.9;
+        }
+
+        .layer-ground-front {
+            position: absolute;
+            bottom: -10%;
+            left: 0;
+            width: 100%;
+            height: 45vh;
+            background-image: url('../../img/background/ground.png');
+            background-size: cover;
+            background-position: top center;
+            background-repeat: repeat-x;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            z-index: 3;
+        }
+
+        /* HEADER & TOPBAR */
+        header {
+            background-color: rgba(255, 255, 255, 0.39);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        body.dark-mode header {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .logo img {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .bg-blue {
+            background-color: #4f91e8;
+        }
+
+        .bg-orange {
+            background-color: #ffa45b;
+        }
+
+        .bg-yellow {
+            background-color: #ffcc14;
+        }
+
+        .user-badge {
+            background-color: #92b165;
+            padding: 5px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .user-badge i {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .user-badge i:hover {
+            transform: scale(1.2);
+        }
+
+        /* INTERFACE DO LIVRO - PROPORÇÃO A4 */
+        .history-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px 40px 20px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .book-wrapper {
+            background: var(--book-bg);
+            border: 4px solid var(--book-border);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            padding: 50px 60px;
+            box-shadow: 0 15px 0 var(--book-shadow), 0 25px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.5s ease;
+            margin-bottom: 25px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Proporção A4 (210mm x 297mm) */
+        @media (min-width: 1024px) {
+            .book-wrapper {
+                max-width: 900px;
+                min-height: 600px;
+                padding: 55px 65px;
+            }
+        }
+
+        @media print {
+            .book-wrapper {
+                max-width: 210mm;
+                min-height: 297mm;
+                padding: 15mm;
+                box-shadow: none;
+                border: 2px solid #ccc;
+            }
+
+            .parallax-container,
+            .book-controls,
+            header,
+            .magic-toast {
+                display: none;
+            }
+
+            body {
+                background: white;
+            }
+
+            .page-content {
+                color: black;
+            }
+        }
+
+        .page-content {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: var(--book-text);
+            text-align: justify;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .page-content p {
+            animation: fadeIn 0.5s ease-in-out;
+            text-indent: 2em;
+            margin-bottom: 1em;
+        }
+
+        .page-content h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            color: var(--book-border);
+        }
+
+        /* Efeitos visuais para os Personagens dentro do livro */
+        .story-highlight {
+            padding: 2px 8px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            display: inline-block;
+            margin: 0 4px;
+        }
+
+        .h-ester {
+            background-color: #ff6b6b;
+        }
+
+        .h-jorge {
+            background-color: #4f91e8;
+        }
+
+        .h-isa {
+            background-color: #ffa45b;
+        }
+
+        .h-dani {
+            background-color: #92b165;
+        }
+
+        /* CONTROLES DE NAVEGAÇÃO */
+        .book-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            gap: 20px;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #2EC4B6 0%, #018B8B 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(46, 196, 182, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .control-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(46, 196, 182, 0.6);
+        }
+
+        .control-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .control-btn:disabled {
+            background: #cbd5e0;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .page-indicator {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* FOLHAS CAINDO (IGUAL AO GAME.HTML) */
+        .leaf {
+            position: absolute;
+            background-image: url('../../img/background/leave.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.6;
+            filter: brightness(var(--brightness-assets));
+            transition: filter 0.8s ease;
+            pointer-events: none;
+            width: 25px;
+            height: 25px;
+        }
+
+        @keyframes fallLeaf1 {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fallLeaf2 {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(-360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fallLeaf3 {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.7;
+            }
+
+            90% {
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* TOAST */
+        .magic-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #FFF0F5;
+            color: #5E3A5E;
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 8px 0 #FFB6C1;
+            border: 2px solid white;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .magic-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+            }
+
+            .logo img {
+                height: 40px;
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+
+            .book-wrapper {
+                padding: 25px 20px;
+                min-height: 500px;
+            }
+
+            .page-content {
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+
+            .page-content h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="parallax-container" id="parallaxContainer">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+        <div class="cloud cloud-5"></div>
+        <div class="layer-ground-back"></div>
+        <img src="../../img/background/school.png" class="layer-school" alt="Escola">
+        <img src="../../img/background/tree.png" class="layer-tree-1" alt="Árvore 1">
+        <img src="../../img/background/tree.png" class="layer-tree-2" alt="Árvore 2">
+        <div class="layer-ground-mid"></div>
+        <div class="layer-ground-front"></div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <img src="../../img/logo.png" alt="PRESS START" id="logo-img">
+        </div>
+        <nav>
+            <a href="game.html" class="nav-btn bg-orange"><i class="fa-solid fa-gamepad"></i> <span>Joguinho</span></a>
+            <a href="../../../index.html" class="nav-btn bg-blue"><i class="fa-solid fa-house"></i>
+                <span>Menu</span></a>
+            <div class="user-badge">
+                <i class="fas fa-sun" id="themeToggle" title="Alternar Modo Noturno/Diurno"></i>
+                <span id="userNameDisplay"
+                    style="font-weight: 700; font-size: 14px; text-transform: uppercase;">VISITANTE</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="history-container">
+
+        <div class="book-wrapper">
+            <div class="page-content" id="storyPageContent">
+            </div>
+        </div>
+
+        <div class="book-controls">
+            <button class="control-btn" id="prevPageBtn">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+            <div class="page-indicator" id="pageIndicator">
+                Pág. 1 / 22
+            </div>
+            <button class="control-btn" id="nextPageBtn">
+                Avançar <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <div id="magicToast" class="magic-toast">
+        <i class="fas fa-magic"></i>
+        <span id="toastMessage">✨ Transição mágica!</span>
+    </div>
+
+    <script>
+        // ============================================================
+        // BANCO DE DADOS DA HISTÓRIA (Texto exatamente igual ao PDF)
+        // ============================================================
+        const historia = [
+            { texto: "<h2>A Escola Onde Todos Cabem</h2><br><p>Esta é a história de como pequenos gestos podem transformar um lugar inteiro em uma verdadeira <strong>Escola Ideal</strong>.</p>" },
+            { texto: "<p>Era uma vez...</p><p>Uma garotinha chamada <span class='story-highlight h-ester'>Ester</span>que tinha um lindo sonho. E ela tinha um detalhe muito especial, a garota possuía uma dificuldade de atenção, conhecida como <strong>TDAH</strong> e por isso, usava um cordão com girassóis para as pessoas entenderem sua necessidade.</p>" },
+            { texto: "<p>Todos os dias ela pedia a sua mãe para que pudesse frequentar a escola da sua cidade, mas sua mãe sempre dizia que ela ainda não podia ir, mas que logo ela teria seu primeiro dia e, assim, a garotinha aguardou. </p> <p>Até que, finalmente..</p> <p>Chegou o tão esperado dia!!</p>" },
+            { texto: "<p><span class='story-highlight h-ester'>Ester</span>havia completado a idade de 4 anos e estava pronta para começar as aulas, seu primeiro dia seria no dia seguinte. Ela estava animada para fazer amizades, conhecer sua professora, brincar e aprender como todas as crianças.</p>" },
+            { texto: "<p>No dia seguinte...</p><p><span class='story-highlight h-ester'>Ester</span> acordou cedo, se arrumou toda para esse dia especial. No caminho para a escola, ela perguntava sem parar:</p><p>- Mamãe, estou tão feliz, como será que é a minha escola? A minha sala? E a comida, será que é boa? Será que vou fazer amigos? Será que vou gostar? Vão gostar de mim?</p>"},
+            { texto: "<p>- <span class='story-highlight h-ester'>Ester</span>, querida, a escola é um lugar muito especial, tenho certeza que fará amigos e todos irão gostar de você. E a comida, deve ser boa, mas não mais do que a da mamãe.</p><p>A mãe da garota deixou ela no portão da escola depois de um abraço apertado, torcendo para que fosse um dia muito bom para a filha. Ela havia escolhido essa escola porque a estrutura parecia ser boa e disseram que a escola cuidaria bem de sua filha... </p>" },
+            { texto: "<p><span class='story-highlight h-ester'>Ester</span> entrou e, por algum motivo, a garota parou. Por que será? O que ela viu? </p><p>A escola era muito diferente do que ela tinha imaginado, tinha paredes cinzas e tristes, as crianças brincavam pouco, os brinquedos estavam quebrados, não era nada que ela havia sonhado. E agora, o que ela vai fazer? </p>" },
+            { texto: "<p>A menina andou um pouco e encontrou Isabela, uma garota muito especial, ela era cadeirante! E, logo de início, se tornaram amigas. Isa contou que tinha dificuldade para andar pela escola porque havia muitas escadas e nenhuma rampa para sua cadeira de rodas. Às vezes, esqueciam de chamá-la para brincar, e isso a deixava triste. <span class='story-highlight h-ester'>Ester</span> logo pensou: </p><p>- Isso está errado!</p>" },
+            { texto: "<p>Incomodada, a garota olha para os lados à procura de algum professor, mas acaba batendo os olhos em um garoto, sentado sozinho. Ela vai até ele e diz:</p><p>- Olá, me chamo <span class='story-highlight h-ester'>Ester</span>, qual o seu nome?</p><p>O garoto responde, timidamente:</p><p>- Sou o Jorge.</p>" },
+            { texto: "<p>- Por que você está sozinho?</p><p>- As crianças não brincam muito comigo porque tenho uma pele com uma cor diferente delas e sou muito tímido.</p><p>Para <span class='story-highlight h-ester'>Ester</span>, pessoas com a pele igual de Jorge era normal, ela não se incomodava por isso, e diz: </p><p>- Bom, eu acho a sua pele linda, você não é diferente por causa da sua pele, as pessoas podem ter cores de pele diferentes. Eu sou nova aqui, acabei de conhecer a Isa e, agora, você. Que tal ficarmos juntos? </p><p>- Claro e seja bem-vinda!</p>" },
+            { texto: "<p>As crianças se juntaram e iniciaram  uma conversa:</p>" },
+            { texto: "<p>-<span class='story-highlight h-ester'>Ester</span>, por que você também usa um cordão? - Jorge pergunta curioso. </p><p>Foi nesse momento que <span class='story-highlight h-ester'>Ester</span> notou que Jorge usava um cordão parecido com o seu, mas ao invés de girassóis tinha um quebra-cabeça. </p><p>-Porque eu tenho TDAH que é uma dificuldade de atenção. Mas e o seu cordão? </p><p>- Ah, eu tenho autismo. - Respondeu Jorge.</p>" },
+            { texto: "<p>- Sabe, minha mamãe diz que cada pessoa é especial do seu jeito. - Diz <span class='story-highlight h-ester'>Ester</span>.</p><p>Isa sorriu e disse:</p><p>-Eu gostei disso!</p><p>- Essa escola sempre foi assim? - <span class='story-highlight h-ester'>Ester</span> pergunta.</p><p>- Assim como? - Pergunta Isa</p><p>- Sem cor, com brinquedos quebrados e sem brincadeiras.</p><p>- Ah, acho que sempre foi assim, ninguém deve ter reparado. - Respondeu Jorge.</p>" },
+            { texto: "<p>A garota ficou pensativa, e olhava ao seu redor. Olhou para Isa... depois para Jorge... e a escola sem cor... E teve uma grande ideia!! </p><p>- E se a gente mudar a escola?</p>" },
+            { texto: "<p>- Mudar a escola? Mas como? - Diz Jorge. </p><p>- A gente vai precisar de alguém para nos ajudar. - Isa responde.</p><p>- É verdade... tem alguém que vocês conheçam?</p><p>Isa e Jorge se olharam e deram um grande sorriso, respondendo juntos: </p><p>- A tia Dani!</p><p>- Ela é nossa professora, vai querer ajudar! - Completou Isa.</p>" },
+            { texto: "<p>Assim, as crianças foram até a professora e contaram a ideia de Ester. Ela ficou muito feliz com a ideia e decidiu ajudá-las. Eles começaram a reforma no dia seguinte. </p>" },
+            { texto: "<p>Quando saiu da escola, a menina correu para a sua mãe e contou tudo o que havia acontecido no seu dia e o plano que havia montado com os amigos e a professora. Isa e Jorge fizeram o mesmo. Os pais ficaram felizes pela atitude dos filhos e decidiram que também participaram dessa mudança.</p>" },
+            { texto: "<p>No próximo dia…</p><p>Os pais levaram as três crianças e conversaram com a professora dizendo que queriam ajudar, eles levaram tintas, alguns brinquedos e muita decoração para escola. Mas algo muito legal aconteceu. Todas as outras crianças gostaram da ideia e, aos poucos, elas se juntaram com as suas famílias nessa atividade.  </p>" },
+            { texto: "<p>As salas foram pintadas, a biblioteca recebeu livros novos, os brinquedos foram consertados, as crianças podiam brincar, o pátio tinha diferentes cores. Tudo estava lindo e muito alegre. As crianças conseguiram mudar a escola!</p>" },
+            { texto: "<p>Quando tudo ficou pronto, fizeram uma grande festa para comemorar!</p><p><Isa e Jorge, que muitas vezes eram ignorados pelos colegas, tinham feito bons amigos e, agora, estavam participando de todas atividades. De maneira muito especial, Isa agora conseguia andar pela escola graças às rampas que colocaram./p>" },
+            { texto: "<p>Ester, aquela doce garota, uma menina com TDAH, chegou trazendo leveza para a escola, inclusão e muito amor. Sua necessidade nunca a impediu de fazer grandes coisas, e graças ao seu olhar atento para os colegas, conseguiu transformar a escola e fazer com que todos se sintam felizes e alegres de estar naquele lugar.</p>" },
+            { texto: "<p>Mas nada seria possível sem os professores e as famílias que também foram importantes nesse processo.</p><p>Afinal, o que é uma escola sem diversão, cor, inclusão e amor?</p>" },
+            { texto: "<p>A escola de Ester, agora tinha amizade, amor, alegria e inclusão. Porque uma escola de verdade não é feita apenas de paredes e salas… Ela é feita de pessoas que aprendem a cuidar umas das outras. Uma escola bonita de verdade é aquela onde cabe todo mundo.</p><p>Fim.</p>" }
+        ];
+
+        // Array com os nomes das imagens de fundo da história (history-background)
+        const imagensFundo = ['1.png', '2.png', '3.png', '4.png'];
+
+        let currentPage = 0;
+        let bgElements = []; // Armazenar elementos de background da história
+
+        // ELEMENTOS DA DOM
+        const storyPageContent = document.getElementById('storyPageContent');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const toast = document.getElementById('magicToast');
+        const toastMsg = document.getElementById('toastMessage');
+        const bookWrapper = document.querySelector('.book-wrapper');
+
+        // EXIBIR TOAST
+        function showToast(message) {
+            toastMsg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ATUALIZAR BACKGROUND DA FOLHA DO LIVRO (history-background)
+        function updateBookBackground() {
+            // Determinar qual imagem usar baseado na página atual (1.png, 2.png, 3.png, 4.png, repetindo)
+            const imageIndex = currentPage % imagensFundo.length;
+            const imageUrl = `history-background/${imagensFundo[imageIndex]}`;
+
+            // Aplicar background ao book-wrapper
+            bookWrapper.style.backgroundImage = `url('${imageUrl}')`;
+            bookWrapper.style.backgroundSize = 'cover';
+            bookWrapper.style.backgroundPosition = 'center';
+            bookWrapper.style.backgroundRepeat = 'no-repeat';
+        }
+
+        // ATUALIZAR PÁGINA DO LIVRO
+        function updatePage() {
+            storyPageContent.innerHTML = historia[currentPage].texto;
+            pageIndicator.textContent = `Pág. ${currentPage + 1} / ${historia.length}`;
+
+            // Atualizar background da folha
+            updateBookBackground();
+
+            // Controle de estado dos botões
+            prevPageBtn.disabled = (currentPage === 0);
+
+            if (currentPage === historia.length - 1) {
+                nextPageBtn.innerHTML = 'Recomeçar <i class="fas fa-sync-alt"></i>';
+            } else {
+                nextPageBtn.innerHTML = 'Avançar <i class="fas fa-arrow-right"></i>';
+            }
+        }
+
+        // EVENTOS DE NAVEGAÇÃO
+        nextPageBtn.addEventListener('click', () => {
+            if (currentPage < historia.length - 1) {
+                currentPage++;
+                updatePage();
+            } else {
+                currentPage = 0;
+                updatePage();
+                showToast("📖 Voltamos ao início da nossa jornada!");
+            }
+        });
+
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePage();
+            }
+        });
+
+        // SISTEMA DE TEMA DIURNO / NOTURNO
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+
+            themeToggle.classList.remove('fa-sun', 'fa-moon');
+            themeToggle.classList.add(isDark ? 'fa-moon' : 'fa-sun');
+
+            if (isDark) {
+                showToast("🌙 Modo Noturno ativado! Boa leitura sob a luz da lua! ✨");
+            } else {
+                showToast("☀️ Modo Diurno ativado! O sol voltou a brilhar na escola! 🌈");
+            }
+        });
+
+        // GERADOR DE FOLHAS CAINDO (IGUAL AO GAME.HTML)
+        function createLeavesEffect() {
+            const container = document.getElementById('parallaxContainer');
+            for (let i = 0; i < 20; i++) {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                leaf.style.width = Math.random() * 20 + 15 + 'px';
+                leaf.style.height = leaf.style.width;
+                leaf.style.left = Math.random() * 100 + '%';
+                leaf.style.animation = `fallLeaf${Math.floor(Math.random() * 3) + 1} ${Math.random() * 12 + 8}s linear infinite`;
+                container.appendChild(leaf);
+            }
+        }
+
+        // RECUPERAR NOME DO LOCALSTORAGE
+        function loadPlayerName() {
+            const storedName = localStorage.getItem('playerName');
+            const nameDisplay = document.getElementById('userNameDisplay');
+            if (storedName && nameDisplay) {
+                nameDisplay.textContent = storedName.toUpperCase();
+            }
+        }
+
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePage();
+            createLeavesEffect();
+            loadPlayerName();
+            showToast("📖 Prepare-se para uma linda história de inclusão!");
+        });
+    </script>
+</body>
+
+</html>
